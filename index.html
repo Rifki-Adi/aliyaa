@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Someone ❤️</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ================= LOADING ================= -->
+
+<div id="loading">
+
+    <div class="loader-heart">❤</div>
+
+    <h2>Preparing Something Special...</h2>
+
+</div>
+
+<!-- ================= INTRO ================= -->
+
+<section id="intro">
+
+    <div class="overlay"></div>
+
+    <div class="intro-content">
+
+        <h3>Hello Beautiful</h3>
+
+        <h1>For You ❤️</h1>
+
+        <p>
+            Every moment with you is my favorite memory.
+        </p>
+
+        <button id="startBtn">
+            Tap To Start
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ================= MUSIC ================= -->
+
+<audio id="bgMusic" loop>
+
+    <source src="music/favourite-girl.mp3" type="audio/mpeg">
+
+</audio>
+
+<!-- ================= MAIN ================= -->
+
+<main id="mainContent">
+
+    <!-- Background -->
+
+    <div class="background-stars"></div>
+
+    <!-- Heart Canvas -->
+
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- Slideshow -->
+
+    <section class="slideshow">
+
+        <div class="slide active">
+
+            <img src="img/1.jpg">
+
+        </div>
+
+        <div class="slide">
+
+            <img src="img/2.jpg">
+
+        </div>
+
+        <div class="slide">
+
+            <img src="img/3.jpg">
+
+        </div>
+
+        <div class="slide">
+
+            <img src="img/4.jpg">
+
+        </div>
+
+        <div class="slide">
+
+            <img src="img/5.jpg">
+
+        </div>
+
+    </section>
+
+    <!-- Text -->
+
+    <section class="text-section">
+
+        <h1 id="typingText"></h1>
+
+        <p id="subText">
+
+            Thank you for always being part of my life.
+
+        </p>
+
+    </section>
+
+    <!-- Timeline -->
+
+    <section class="timeline">
+
+        <div class="card" data-aos="fade-up">
+
+            <h2>❤️ First Meet</h2>
+
+            <p>
+                Put your story here.
+            </p>
+
+        </div>
+
+        <div class="card" data-aos="fade-up">
+
+            <h2>🌸 Beautiful Moments</h2>
+
+            <p>
+                Write anything here.
+            </p>
+
+        </div>
+
+        <div class="card" data-aos="fade-up">
+
+            <h2>💖 Forever</h2>
+
+            <p>
+                Your own words...
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Gallery -->
+
+    <section class="gallery">
+
+        <img src="img/1.jpg">
+
+        <img src="img/2.jpg">
+
+        <img src="img/3.jpg">
+
+        <img src="img/4.jpg">
+
+        <img src="img/5.jpg">
+
+        <img src="img/6.jpg">
+
+    </section>
+
+    <!-- Ending -->
+
+    <section class="ending">
+
+        <h1>Forever With You ❤️</h1>
+
+        <p>
+
+            Thank you for coming into my life.
+
+        </p>
+
+    </section>
+
+</main>
+
+<!-- Progress -->
+
+<div id="progressBar">
+
+    <div id="progress"></div>
+
+</div>
+
+<!-- Music Button -->
+
+<button id="musicBtn">
+
+    🔊
+
+</button>
+
+<!-- Scroll -->
+
+<button id="scrollTop">
+
+    ↑
+
+</button>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+AOS.init({
+    once:false,
+    duration:1000
+});
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
