@@ -1,642 +1,234 @@
-/* ===========================
-   GOOGLE FONT
-=========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    scroll-behavior:smooth;
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Poppins',sans-serif;
+background:#000;
+color:#fff;
 }
-
 body{
-    font-family:'Poppins',sans-serif;
-    background:#000;
-    color:#fff;
-    overflow-x:hidden;
+position:relative;
 }
 
-/* ===========================
-   LOADING
-=========================== */
-
-#loading{
-    position:fixed;
-    inset:0;
-    background:#000;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
+#loading,#intro,#ending{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:#000;
+z-index:999;
 }
 
 .loader-heart{
-    font-size:65px;
-    color:#ff4d6d;
-    animation:heartBeat 1s infinite;
+font-size:70px;
+color:#ff5c8a;
+animation:heartbeat 1.2s infinite;
 }
 
-#loading h2{
-    margin-top:20px;
-    font-size:20px;
-    letter-spacing:2px;
-    font-weight:300;
+.loading-bar{
+width:220px;
+height:5px;
+background:#333;
+margin-top:20px;
+border-radius:30px;
+overflow:hidden;
 }
 
-@keyframes heartBeat{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.25);
-    }
-
-    100%{
-        transform:scale(1);
-    }
-
+#loadingFill{
+display:block;
+width:0%;
+height:100%;
+background:#fff;
 }
 
-/* ===========================
-   INTRO
-=========================== */
-
-#intro{
-    height:100vh;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-    background:url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
-    background-size:cover;
-    background-position:center;
+#introBackground,
+#backgroundBlur,
+#endingBlur{
+position:absolute;
+inset:0;
+background:url("img/1.jpg") center/cover no-repeat;
+transform:scale(1.2);
+filter:blur(30px);
+opacity:.35;
 }
 
-.overlay{
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(3px);
+.introOverlay,
+.endingOverlay,
+#overlay{
+position:absolute;
+inset:0;
+background:rgba(0,0,0,.45);
 }
 
-.intro-content{
-    position:relative;
-    z-index:5;
-    text-align:center;
-    width:90%;
+.introContent,.endingContent{
+position:relative;
+z-index:5;
+text-align:center;
+padding:20px;
 }
 
-.intro-content h3{
-    font-weight:300;
-    font-size:22px;
+.smallTitle{
+letter-spacing:4px;
+font-size:14px;
+color:#ddd;
+margin-bottom:15px;
 }
 
-.intro-content h1{
-
-    font-family:"Great Vibes",cursive;
-
-    font-size:80px;
-
-    margin:15px 0;
-
-    color:#fff;
-
+.introContent h1,
+.endingContent h1{
+font-family:'Great Vibes',cursive;
+font-size:64px;
+margin-bottom:20px;
 }
 
-.intro-content p{
-
-    max-width:500px;
-
-    margin:auto;
-
-    color:#ddd;
-
-    line-height:1.8;
-
+.description,.endingContent p{
+line-height:1.8;
+color:#eee;
 }
 
-#startBtn{
-
-    margin-top:40px;
-
-    padding:15px 45px;
-
-    border:none;
-
-    border-radius:50px;
-
-    background:#ff4d6d;
-
-    color:#fff;
-
-    cursor:pointer;
-
-    font-size:17px;
-
-    transition:.35s;
-
+button{
+padding:15px 35px;
+margin-top:35px;
+border:none;
+border-radius:999px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
 }
 
-#startBtn:hover{
-
-    transform:translateY(-5px);
-
-    box-shadow:0 10px 35px rgba(255,77,109,.5);
-
+button:hover{
+transform:scale(1.05);
 }
 
-/* ===========================
-   MAIN
-=========================== */
-
-#mainContent{
-
-    display:none;
-
-    position:relative;
-
-    background:#050505;
-
+#story{
+display:none;
+position:fixed;
+inset:0;
+overflow:hidden;
 }
 
-/* ===========================
-   STARS
-=========================== */
-
-.background-stars{
-
-    position:fixed;
-
-    inset:0;
-
-    background-image:
-
-    radial-gradient(white 1px,transparent 1px);
-
-    background-size:45px 45px;
-
-    opacity:.15;
-
-    animation:moveStars 70s linear infinite;
-
-    pointer-events:none;
-
+#viewer{
+position:absolute;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:5;
 }
 
-@keyframes moveStars{
-
-    from{
-
-        transform:translateY(0);
-
-    }
-
-    to{
-
-        transform:translateY(-600px);
-
-    }
-
+#photo{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:1s;
 }
 
-/* ===========================
-   HEART CANVAS
-=========================== */
+#gradient{
+position:absolute;
+inset:0;
+background:linear-gradient(transparent,rgba(0,0,0,.2),rgba(0,0,0,.7));
+z-index:3;
+}
+
+#grain{
+position:absolute;
+inset:0;
+opacity:.08;
+background-image:radial-gradient(#fff 1px,transparent 1px);
+background-size:4px 4px;
+pointer-events:none;
+z-index:4;
+}
+
+#stars{
+position:absolute;
+inset:0;
+background-image:radial-gradient(circle,#fff 1px,transparent 1px);
+background-size:40px 40px;
+opacity:.15;
+animation:stars 120s linear infinite;
+z-index:2;
+}
 
 #heartCanvas{
-
-    position:fixed;
-
-    inset:0;
-
-    pointer-events:none;
-
-    z-index:1;
-
+position:absolute;
+inset:0;
+pointer-events:none;
+z-index:8;
 }
 
-/* ===========================
-   SLIDESHOW
-=========================== */
-
-.slideshow{
-
-    width:100%;
-
-    height:100vh;
-
-    position:relative;
-
-    overflow:hidden;
-
+#textContainer{
+position:absolute;
+bottom:9%;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:700px;
+text-align:center;
+z-index:20;
 }
 
-.slide{
-
-    position:absolute;
-
-    width:100%;
-
-    height:100%;
-
-    opacity:0;
-
-    transition:1.2s;
-
-    transform:scale(1.15);
-
-}
-
-.slide.active{
-
-    opacity:1;
-
-    transform:scale(1);
-
-}
-
-.slide img{
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:cover;
-
-}
-
-/* ===========================
-   TEXT
-=========================== */
-
-.text-section{
-
-    min-height:80vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    flex-direction:column;
-
-    text-align:center;
-
-    padding:40px;
-
-}
-
-#typingText{
-
-    font-size:55px;
-
-    font-family:"Great Vibes",cursive;
-
-    margin-bottom:20px;
-
-    color:#ff7b98;
-
+#mainText{
+font-family:'Great Vibes',cursive;
+font-size:56px;
+margin-bottom:12px;
+text-shadow:0 5px 20px rgba(0,0,0,.6);
 }
 
 #subText{
-
-    max-width:700px;
-
-    line-height:2;
-
-    color:#ddd;
-
+font-size:18px;
+line-height:1.8;
 }
 
-/* ===========================
-   TIMELINE
-=========================== */
-
-.timeline{
-
-    width:90%;
-
-    max-width:1100px;
-
-    margin:auto;
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
-    gap:30px;
-
-    padding:70px 0;
-
+#progressContainer{
+position:absolute;
+top:18px;
+left:18px;
+right:18px;
+height:4px;
+background:rgba(255,255,255,.2);
+border-radius:20px;
+overflow:hidden;
+z-index:30;
 }
-
-.card{
-
-    background:rgba(255,255,255,.06);
-
-    backdrop-filter:blur(12px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    padding:35px;
-
-    border-radius:20px;
-
-    transition:.35s;
-
-}
-
-.card:hover{
-
-    transform:translateY(-10px);
-
-    box-shadow:0 15px 35px rgba(255,255,255,.08);
-
-}
-
-.card h2{
-
-    margin-bottom:15px;
-
-}
-
-.card p{
-
-    color:#ddd;
-
-    line-height:1.8;
-
-}
-
-/* ===========================
-   GALLERY
-=========================== */
-
-.gallery{
-
-    width:92%;
-
-    margin:auto;
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-    gap:18px;
-
-    padding:60px 0;
-
-}
-
-.gallery img{
-
-    width:100%;
-
-    border-radius:18px;
-
-    transition:.4s;
-
-    cursor:pointer;
-
-}
-
-.gallery img:hover{
-
-    transform:scale(1.05);
-
-}
-
-/* ===========================
-   ENDING
-=========================== */
-
-.ending{
-
-    min-height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    flex-direction:column;
-
-    text-align:center;
-
-    padding:30px;
-
-}
-
-.ending h1{
-
-    font-size:70px;
-
-    font-family:"Great Vibes",cursive;
-
-    color:#ff6f91;
-
-}
-
-.ending p{
-
-    margin-top:20px;
-
-    color:#ddd;
-
-    font-size:18px;
-
-}
-
-/* ===========================
-   MUSIC BUTTON
-=========================== */
-
-#musicBtn{
-
-    position:fixed;
-
-    bottom:25px;
-
-    right:25px;
-
-    width:55px;
-
-    height:55px;
-
-    border-radius:50%;
-
-    border:none;
-
-    background:#ff4d6d;
-
-    color:#fff;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    z-index:999;
-
-    box-shadow:0 0 25px rgba(255,77,109,.5);
-
-}
-
-/* ===========================
-   SCROLL TOP
-=========================== */
-
-#scrollTop{
-
-    position:fixed;
-
-    bottom:95px;
-
-    right:25px;
-
-    width:50px;
-
-    height:50px;
-
-    border:none;
-
-    border-radius:50%;
-
-    cursor:pointer;
-
-    background:#fff;
-
-    color:#111;
-
-    display:none;
-
-    z-index:999;
-
-}
-
-/* ===========================
-   PROGRESS BAR
-=========================== */
 
 #progressBar{
-
-    position:fixed;
-
-    top:0;
-
-    left:0;
-
-    width:100%;
-
-    height:5px;
-
-    background:rgba(255,255,255,.08);
-
-    z-index:9999;
-
+width:0%;
+height:100%;
+background:#fff;
 }
 
-#progress{
-
-    width:0;
-
-    height:100%;
-
-    background:linear-gradient(90deg,#ff4d6d,#ff9a8b);
-
+#musicBtn{
+position:absolute;
+top:30px;
+right:25px;
+width:50px;
+height:50px;
+border-radius:50%;
+background:rgba(255,255,255,.15);
+color:#fff;
+z-index:30;
 }
 
-/* ===========================
-   SCROLLBAR
-=========================== */
-
-::-webkit-scrollbar{
-
-    width:10px;
-
+@keyframes heartbeat{
+50%{transform:scale(1.2)}
 }
 
-::-webkit-scrollbar-thumb{
-
-    background:#ff4d6d;
-
-    border-radius:20px;
-
+@keyframes stars{
+from{background-position:0 0}
+to{background-position:0 -1000px}
 }
-
-::-webkit-scrollbar-track{
-
-    background:#111;
-
-}
-
-/* ===========================
-   RESPONSIVE
-=========================== */
 
 @media(max-width:768px){
-
-.intro-content h1{
-
-font-size:55px;
-
+.introContent h1,.endingContent h1,#mainText{font-size:46px}
+#subText{font-size:16px}
 }
 
-#typingText{
-
-font-size:42px;
-
-}
-
-.ending h1{
-
-font-size:45px;
-
-}
-
-.timeline{
-
-grid-template-columns:1fr;
-
-}
-
-.gallery{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-}
-
-@media(max-width:500px){
-
-.gallery{
-
-grid-template-columns:1fr;
-
-}
-
-.intro-content h3{
-
-font-size:18px;
-
-}
-
-.intro-content p{
-
-font-size:14px;
-
-}
-
-#startBtn{
-
-width:220px;
-
-}
-
+@media(max-width:430px){
+.introContent h1,.endingContent h1,#mainText{font-size:38px}
+.description,#subText{font-size:15px}
+button{padding:14px 28px}
 }
