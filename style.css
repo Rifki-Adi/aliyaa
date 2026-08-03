@@ -1,0 +1,642 @@
+/* ===========================
+   GOOGLE FONT
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#000;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+/* ===========================
+   LOADING
+=========================== */
+
+#loading{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.loader-heart{
+    font-size:65px;
+    color:#ff4d6d;
+    animation:heartBeat 1s infinite;
+}
+
+#loading h2{
+    margin-top:20px;
+    font-size:20px;
+    letter-spacing:2px;
+    font-weight:300;
+}
+
+@keyframes heartBeat{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.25);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
+/* ===========================
+   INTRO
+=========================== */
+
+#intro{
+    height:100vh;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    background:url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(3px);
+}
+
+.intro-content{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    width:90%;
+}
+
+.intro-content h3{
+    font-weight:300;
+    font-size:22px;
+}
+
+.intro-content h1{
+
+    font-family:"Great Vibes",cursive;
+
+    font-size:80px;
+
+    margin:15px 0;
+
+    color:#fff;
+
+}
+
+.intro-content p{
+
+    max-width:500px;
+
+    margin:auto;
+
+    color:#ddd;
+
+    line-height:1.8;
+
+}
+
+#startBtn{
+
+    margin-top:40px;
+
+    padding:15px 45px;
+
+    border:none;
+
+    border-radius:50px;
+
+    background:#ff4d6d;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    transition:.35s;
+
+}
+
+#startBtn:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 10px 35px rgba(255,77,109,.5);
+
+}
+
+/* ===========================
+   MAIN
+=========================== */
+
+#mainContent{
+
+    display:none;
+
+    position:relative;
+
+    background:#050505;
+
+}
+
+/* ===========================
+   STARS
+=========================== */
+
+.background-stars{
+
+    position:fixed;
+
+    inset:0;
+
+    background-image:
+
+    radial-gradient(white 1px,transparent 1px);
+
+    background-size:45px 45px;
+
+    opacity:.15;
+
+    animation:moveStars 70s linear infinite;
+
+    pointer-events:none;
+
+}
+
+@keyframes moveStars{
+
+    from{
+
+        transform:translateY(0);
+
+    }
+
+    to{
+
+        transform:translateY(-600px);
+
+    }
+
+}
+
+/* ===========================
+   HEART CANVAS
+=========================== */
+
+#heartCanvas{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:1;
+
+}
+
+/* ===========================
+   SLIDESHOW
+=========================== */
+
+.slideshow{
+
+    width:100%;
+
+    height:100vh;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.slide{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    opacity:0;
+
+    transition:1.2s;
+
+    transform:scale(1.15);
+
+}
+
+.slide.active{
+
+    opacity:1;
+
+    transform:scale(1);
+
+}
+
+.slide img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+/* ===========================
+   TEXT
+=========================== */
+
+.text-section{
+
+    min-height:80vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-direction:column;
+
+    text-align:center;
+
+    padding:40px;
+
+}
+
+#typingText{
+
+    font-size:55px;
+
+    font-family:"Great Vibes",cursive;
+
+    margin-bottom:20px;
+
+    color:#ff7b98;
+
+}
+
+#subText{
+
+    max-width:700px;
+
+    line-height:2;
+
+    color:#ddd;
+
+}
+
+/* ===========================
+   TIMELINE
+=========================== */
+
+.timeline{
+
+    width:90%;
+
+    max-width:1100px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+    padding:70px 0;
+
+}
+
+.card{
+
+    background:rgba(255,255,255,.06);
+
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    padding:35px;
+
+    border-radius:20px;
+
+    transition:.35s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:0 15px 35px rgba(255,255,255,.08);
+
+}
+
+.card h2{
+
+    margin-bottom:15px;
+
+}
+
+.card p{
+
+    color:#ddd;
+
+    line-height:1.8;
+
+}
+
+/* ===========================
+   GALLERY
+=========================== */
+
+.gallery{
+
+    width:92%;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+    padding:60px 0;
+
+}
+
+.gallery img{
+
+    width:100%;
+
+    border-radius:18px;
+
+    transition:.4s;
+
+    cursor:pointer;
+
+}
+
+.gallery img:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ===========================
+   ENDING
+=========================== */
+
+.ending{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-direction:column;
+
+    text-align:center;
+
+    padding:30px;
+
+}
+
+.ending h1{
+
+    font-size:70px;
+
+    font-family:"Great Vibes",cursive;
+
+    color:#ff6f91;
+
+}
+
+.ending p{
+
+    margin-top:20px;
+
+    color:#ddd;
+
+    font-size:18px;
+
+}
+
+/* ===========================
+   MUSIC BUTTON
+=========================== */
+
+#musicBtn{
+
+    position:fixed;
+
+    bottom:25px;
+
+    right:25px;
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:#ff4d6d;
+
+    color:#fff;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    z-index:999;
+
+    box-shadow:0 0 25px rgba(255,77,109,.5);
+
+}
+
+/* ===========================
+   SCROLL TOP
+=========================== */
+
+#scrollTop{
+
+    position:fixed;
+
+    bottom:95px;
+
+    right:25px;
+
+    width:50px;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    background:#fff;
+
+    color:#111;
+
+    display:none;
+
+    z-index:999;
+
+}
+
+/* ===========================
+   PROGRESS BAR
+=========================== */
+
+#progressBar{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:5px;
+
+    background:rgba(255,255,255,.08);
+
+    z-index:9999;
+
+}
+
+#progress{
+
+    width:0;
+
+    height:100%;
+
+    background:linear-gradient(90deg,#ff4d6d,#ff9a8b);
+
+}
+
+/* ===========================
+   SCROLLBAR
+=========================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#ff4d6d;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#111;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+.intro-content h1{
+
+font-size:55px;
+
+}
+
+#typingText{
+
+font-size:42px;
+
+}
+
+.ending h1{
+
+font-size:45px;
+
+}
+
+.timeline{
+
+grid-template-columns:1fr;
+
+}
+
+.gallery{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:500px){
+
+.gallery{
+
+grid-template-columns:1fr;
+
+}
+
+.intro-content h3{
+
+font-size:18px;
+
+}
+
+.intro-content p{
+
+font-size:14px;
+
+}
+
+#startBtn{
+
+width:220px;
+
+}
+
+}
