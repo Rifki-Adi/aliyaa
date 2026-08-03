@@ -219,6 +219,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
+    padding: 30px; /* Jarak agar bingkai foto tidak menempel di tepi layar */
 }
 
 #photo{
@@ -226,6 +227,10 @@ body{
     height:100%;
     object-fit:cover;
     transition:1s;
+    border: 10px solid #ffffff; /* Ketebalan dan warna bingkai */
+    border-radius: 15px; /* Membuat sudut bingkai sedikit melengkung */
+    box-sizing: border-box; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
 /* ==========================================
