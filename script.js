@@ -1,348 +1,1045 @@
-// =========================
-// LOADING
-// =========================
+/*=====================================================
+    LOVE STORY
+    script.js
+    PART 1 - CORE
+======================================================*/
 
-window.addEventListener("load", () => {
+"use strict";
 
-    setTimeout(() => {
+/*=====================================================
+    ELEMENT
+======================================================*/
 
-        document.getElementById("loading").style.display = "none";
-
-    }, 2500);
-
-});
-
-// =========================
-// ELEMENT
-// =========================
+const loading = document.getElementById("loading");
+const loadingFill = document.getElementById("loadingFill");
 
 const intro = document.getElementById("intro");
-const main = document.getElementById("mainContent");
+const story = document.getElementById("story");
+const ending = document.getElementById("ending");
+
 const startBtn = document.getElementById("startBtn");
-const music = document.getElementById("bgMusic");
+const replayBtn = document.getElementById("replayBtn");
 const musicBtn = document.getElementById("musicBtn");
 
+const backgroundBlur = document.getElementById("backgroundBlur");
 
-// =========================
-// START WEBSITE
-// =========================
+const photo = document.getElementById("photo");
 
-startBtn.onclick = () => {
+const mainText = document.getElementById("mainText");
+const subText = document.getElementById("subText");
 
-    intro.style.display = "none";
+const progressBar = document.getElementById("progressBar");
 
-    main.style.display = "block";
+const audio = document.getElementById("bgMusic");
 
-    music.play().catch(() => {});
+const heartCanvas = document.getElementById("heartCanvas");
+const ctx = heartCanvas.getContext("2d");
 
-};
+/*=====================================================
+    CONFIG
+======================================================*/
 
-// =========================
-// MUSIC BUTTON
-// =========================
+const CONFIG = {
 
-musicBtn.onclick = () => {
+    photoFolder : "img/",
 
-    if (music.paused) {
+    totalPhoto : 30,
 
-        music.play();
+    photoDuration : 6,
 
-        musicBtn.innerHTML = "🔊";
+    transition : 800,
 
-    } else {
+    typingSpeed : 40,
 
-        music.pause();
-
-        musicBtn.innerHTML = "🔇";
-
-    }
+    preload : true
 
 };
 
-// =========================
-// SLIDESHOW
-// =========================
+/*=====================================================
+    PHOTO ARRAY
+======================================================*/
 
-const slides = document.querySelectorAll(".slide");
+const photos = [];
 
-let current = 0;
+for(let i=1;i<=CONFIG.totalPhoto;i++){
 
-function showSlide(index){
-
-    slides.forEach(slide=>{
-
-        slide.classList.remove("active");
-
-    });
-
-    slides[index].classList.add("active");
+    photos.push(CONFIG.photoFolder+i+".jpg");
 
 }
 
-setInterval(()=>{
+/*=====================================================
+    ROMANTIC MESSAGE
+======================================================*/
 
-    current++;
+const messages=[
 
-    if(current >= slides.length){
+{
+time:0,
+title:"My Favorite Person ❤️",
+text:"Every moment with you feels magical."
+},
 
-        current = 0;
+{
+time:6,
+title:"My Happiness",
+text:"Thank you for making my days brighter."
+},
+
+{
+time:12,
+title:"Beautiful Memories",
+text:"Every picture reminds me of you."
+},
+
+{
+time:18,
+title:"My Safe Place",
+text:"Home is wherever you are."
+},
+
+{
+time:24,
+title:"Forever",
+text:"Let's create more memories together."
+},
+
+{
+time:30,
+title:"You & Me",
+text:"The best story has just begun."
+},
+
+{
+time:36,
+title:"Always",
+text:"You are my favorite chapter."
+},
+
+{
+time:42,
+title:"Thank You",
+text:"Thank you for everything."
+},
+
+{
+time:48,
+title:"Love",
+text:"You are my favorite hello."
+},
+
+{
+time:54,
+title:"Forever Starts With You ❤️",
+text:"I love you."
+
+}
+
+];
+
+/*=====================================================
+    APP STATE
+======================================================*/
+
+const state={
+
+started:false,
+
+playing:false,
+
+currentPhoto:-1,
+
+currentMessage:-1,
+
+loaded:0,
+
+finished:false
+
+};
+
+/*=====================================================
+    CANVAS
+======================================================*/
+
+function resizeCanvas(){
+
+    heartCanvas.width=window.innerWidth;
+
+    heartCanvas.height=window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener("resize",resizeCanvas);
+
+/*=====================================================
+    PRELOAD IMAGE
+======================================================*/
+
+function preloadImages(){
+
+    if(!CONFIG.preload){
+
+        loading.style.display="none";
+
+        return;
 
     }
 
-    showSlide(current);
+    photos.forEach(src=>{
 
-},5000);
+        const img=new Image();
 
-// =========================
-// TYPING EFFECT
-// =========================
+        img.onload=function(){
 
-const text = "Every Love Story is Beautiful, But Ours is My Favorite ❤️";
+            state.loaded++;
 
-const typing = document.getElementById("typingText");
+            const percent=
 
-let i = 0;
+            Math.floor(
 
-function typeText(){
+            (state.loaded/photos.length)*100
 
-    if(i < text.length){
+            );
 
-        typing.innerHTML += text.charAt(i);
+            loadingFill.style.width=
+
+            percent+"%";
+
+            if(state.loaded===photos.length){
+
+                setTimeout(()=>{
+
+                    loading.style.opacity="0";
+
+                    setTimeout(()=>{
+
+                        loading.style.display="none";
+
+                    },800);
+
+                },400);
+
+            }
+
+        };
+
+        img.src=src;
+
+    });
+
+}
+
+preloadImages();
+
+/*=====================================================
+    START STORY
+======================================================*/
+
+function startStory(){
+
+    if(state.started) return;
+
+    state.started=true;
+
+    intro.style.display="none";
+
+    story.style.display="block";
+
+    audio.play().catch(()=>{});
+
+    state.playing=true;
+
+}
+
+startBtn.addEventListener(
+
+"click",
+
+startStory
+
+);
+
+/*=====================================================
+    MUSIC BUTTON
+======================================================*/
+
+musicBtn.addEventListener(
+
+"click",
+
+()=>{
+
+if(audio.paused){
+
+audio.play();
+
+musicBtn.innerHTML="🔊";
+
+state.playing=true;
+
+}else{
+
+audio.pause();
+
+musicBtn.innerHTML="🔇";
+
+state.playing=false;
+
+}
+
+}
+
+);
+
+/*=====================================================
+    RANDOM
+======================================================*/
+
+function random(min,max){
+
+    return Math.random()*(max-min)+min;
+
+}
+
+function randomInt(min,max){
+
+    return Math.floor(
+
+        random(min,max)
+
+    );
+
+}
+
+/*=====================================================
+    TYPEWRITER
+======================================================*/
+
+let typingTimer;
+
+function typing(element,text,speed){
+
+    clearTimeout(typingTimer);
+
+    element.innerHTML="";
+
+    let i=0;
+
+    function write(){
+
+        if(i>=text.length){
+
+            return;
+
+        }
+
+        element.innerHTML+=text.charAt(i);
 
         i++;
 
-        setTimeout(typeText,70);
+        typingTimer=
+
+        setTimeout(
+
+            write,
+
+            speed
+
+        );
 
     }
 
+    write();
+
 }
 
-setTimeout(typeText,3500);
+/*=====================================================
+    END PART 1
+======================================================*/
 
-// =========================
-// PROGRESS BAR
-// =========================
+/*=====================================================
+    LOVE STORY
+    PART 2 (REVISED)
+======================================================*/
 
-window.addEventListener("scroll",()=>{
+let photoDuration = CONFIG.photoDuration;
 
-    let scrollTop = document.documentElement.scrollTop;
+/*=====================================================
+    INIT DURATION
+======================================================*/
 
-    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+audio.addEventListener("loadedmetadata",()=>{
 
-    let percent = (scrollTop / height) * 100;
+    photoDuration =
 
-    document.getElementById("progress").style.width = percent + "%";
+    audio.duration / photos.length;
 
 });
 
-// =========================
-// SCROLL BUTTON
-// =========================
+/*=====================================================
+    KEN BURNS
+======================================================*/
 
-const scrollBtn = document.getElementById("scrollTop");
+const burns=[
 
-window.addEventListener("scroll",()=>{
+"scale(1.10) translate(0px,0px)",
 
-    if(window.scrollY > 300){
+"scale(1.15) translate(-25px,0px)",
 
-        scrollBtn.style.display="block";
+"scale(1.15) translate(25px,0px)",
 
-    }else{
+"scale(1.12) translate(0px,-20px)",
 
-        scrollBtn.style.display="none";
+"scale(1.12) translate(0px,20px)",
+
+"scale(1.18) translate(-20px,-20px)",
+
+"scale(1.18) translate(20px,20px)",
+
+"scale(1.16) translate(-15px,25px)",
+
+"scale(1.16) translate(15px,-25px)"
+
+];
+
+function applyKenBurns(){
+
+    photo.style.transition=
+
+    "opacity .8s ease, filter .8s ease, transform 8s linear";
+
+    photo.style.transform=
+
+    burns[randomInt(0,burns.length)];
+
+}
+
+/*=====================================================
+    CHANGE PHOTO
+======================================================*/
+
+function changePhoto(index){
+
+    if(index===state.currentPhoto) return;
+
+    state.currentPhoto=index;
+
+    photo.style.opacity=0;
+
+    photo.style.filter="blur(12px)";
+
+    setTimeout(()=>{
+
+        photo.src=photos[index];
+
+        backgroundBlur.style.backgroundImage=
+
+        `url('${photos[index]}')`;
+
+        applyKenBurns();
+
+        photo.onload=()=>{
+
+            photo.style.opacity=1;
+
+            photo.style.filter="blur(0px)";
+
+        };
+
+    },250);
+
+}
+
+/*=====================================================
+    NEXT IMAGE PRELOAD
+======================================================*/
+
+function preloadNext(index){
+
+    if(index+1>=photos.length) return;
+
+    const img=new Image();
+
+    img.src=photos[index+1];
+
+}
+
+/*=====================================================
+    UPDATE PHOTO
+======================================================*/
+
+function updatePhoto(){
+
+    if(!audio.duration) return;
+
+    let index=Math.floor(
+
+        audio.currentTime /
+
+        photoDuration
+
+    );
+
+    if(index>=photos.length){
+
+        index=photos.length-1;
 
     }
 
-});
+    if(index!==state.currentPhoto){
 
-scrollBtn.onclick=()=>{
+        changePhoto(index);
 
-    window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
-
-    });
-
-};
-
-// =========================
-// HEART PARTICLE
-// =========================
-
-const canvas = document.getElementById("heartCanvas");
-
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-
-canvas.height = window.innerHeight;
-
-let hearts=[];
-
-function Heart(){
-
-    this.x=Math.random()*canvas.width;
-
-    this.y=canvas.height+20;
-
-    this.size=Math.random()*20+10;
-
-    this.speed=Math.random()*2+1;
-
-    this.alpha=1;
-
-}
-
-Heart.prototype.update=function(){
-
-    this.y-=this.speed;
-
-    this.alpha-=0.003;
-
-}
-
-Heart.prototype.draw=function(){
-
-    ctx.save();
-
-    ctx.globalAlpha=this.alpha;
-
-    ctx.fillStyle="#ff4d6d";
-
-    ctx.font=this.size+"px serif";
-
-    ctx.fillText("❤",this.x,this.y);
-
-    ctx.restore();
-
-}
-
-function animateHearts(){
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    if(Math.random()<0.15){
-
-        hearts.push(new Heart());
+        preloadNext(index);
 
     }
 
-    hearts.forEach((heart,index)=>{
+}
 
-        heart.update();
+/*=====================================================
+    UPDATE MESSAGE
+======================================================*/
 
-        heart.draw();
+function updateMessage(){
 
-        if(heart.alpha<=0){
+    const current=audio.currentTime;
 
-            hearts.splice(index,1);
+    for(let i=messages.length-1;i>=0;i--){
+
+        if(current>=messages[i].time){
+
+            if(state.currentMessage!==i){
+
+                state.currentMessage=i;
+
+                clearTimeout(typingTimer);
+
+                typing(
+
+                    mainText,
+
+                    messages[i].title,
+
+                    45
+
+                );
+
+                setTimeout(()=>{
+
+                    typing(
+
+                        subText,
+
+                        messages[i].text,
+
+                        20
+
+                    );
+
+                },350);
+
+            }
+
+            break;
 
         }
 
-    });
-
-    requestAnimationFrame(animateHearts);
+    }
 
 }
 
-animateHearts();
+/*=====================================================
+    PROGRESS
+======================================================*/
 
-// =========================
-// RESIZE
-// =========================
+function updateProgress(){
 
-window.addEventListener("resize",()=>{
+    if(!audio.duration) return;
 
-    canvas.width=window.innerWidth;
+    progressBar.style.width=
 
-    canvas.height=window.innerHeight;
+    ((audio.currentTime/
+
+    audio.duration)*100)
+
+    +"%";
+
+}
+
+/*=====================================================
+    ENGINE
+======================================================*/
+
+function storyLoop(){
+
+    if(state.playing){
+
+        updatePhoto();
+
+        updateMessage();
+
+        updateProgress();
+
+    }
+
+    requestAnimationFrame(
+
+        storyLoop
+
+    );
+
+}
+
+requestAnimationFrame(
+
+storyLoop
+
+);
+
+/*=====================================================
+    ENDING
+======================================================*/
+
+audio.addEventListener(
+
+"ended",
+
+()=>{
+
+state.finished=true;
+
+state.playing=false;
+
+story.style.display="none";
+
+ending.style.display="flex";
 
 });
 
-// =========================
-// IMAGE PARALLAX
-// =========================
+/*=====================================================
+    REPLAY
+======================================================*/
 
-document.addEventListener("mousemove",(e)=>{
+replayBtn.addEventListener(
 
-    const active=document.querySelector(".slide.active img");
+"click",
 
-    if(!active) return;
+()=>{
 
-    let x=(window.innerWidth/2-e.pageX)/80;
+audio.currentTime=0;
 
-    let y=(window.innerHeight/2-e.pageY)/80;
+state.finished=false;
 
-    active.style.transform=`scale(1.08) translate(${x}px,${y}px)`;
+state.playing=true;
 
-});
+state.currentPhoto=-1;
 
-// =========================
-// GALLERY EFFECT
-// =========================
+state.currentMessage=-1;
 
-const gallery=document.querySelectorAll(".gallery img");
+progressBar.style.width="0%";
 
-gallery.forEach(img=>{
+photo.style.transform="scale(1)";
 
-    img.addEventListener("mouseenter",()=>{
+ending.style.display="none";
 
-        img.style.transform="scale(1.08) rotate(2deg)";
+story.style.display="block";
 
-    });
-
-    img.addEventListener("mouseleave",()=>{
-
-        img.style.transform="scale(1)";
-
-    });
+audio.play();
 
 });
+/*=====================================================
+    LOVE STORY
+    PART 3
+    CINEMATIC EFFECT
+======================================================*/
 
-// =========================
-// ENDING FADE
-// =========================
+/*=====================================================
+    HEART PARTICLE
+======================================================*/
 
-const ending=document.querySelector(".ending");
+const hearts=[];
 
-const observer=new IntersectionObserver(entries=>{
+class Heart{
 
-    entries.forEach(entry=>{
+    constructor(){
 
-        if(entry.isIntersecting){
+        this.reset();
 
-            ending.animate([
+    }
 
-                {
+    reset(){
 
-                    opacity:0,
+        this.x=random(0,heartCanvas.width);
 
-                    transform:"translateY(60px)"
+        this.y=heartCanvas.height+50;
 
-                },
+        this.size=random(12,28);
 
-                {
+        this.speed=random(.4,1.2);
 
-                    opacity:1,
+        this.alpha=random(.2,.8);
 
-                    transform:"translateY(0)"
+        this.swing=random(-1,1);
 
-                }
+    }
 
-            ],{
+    update(){
 
-                duration:1500,
+        this.y-=this.speed;
 
-                fill:"forwards"
+        this.x+=Math.sin(this.y*.02)*this.swing;
 
-            });
+        if(this.y<-50){
+
+            this.reset();
 
         }
 
+    }
+
+    draw(){
+
+        ctx.save();
+
+        ctx.globalAlpha=this.alpha;
+
+        ctx.font=this.size+"px serif";
+
+        ctx.fillStyle="#ff6b9d";
+
+        ctx.fillText("❤",this.x,this.y);
+
+        ctx.restore();
+
+    }
+
+}
+
+for(let i=0;i<35;i++){
+
+    hearts.push(new Heart());
+
+}
+
+/*=====================================================
+    HEART ENGINE
+======================================================*/
+
+function updateHeart(){
+
+    ctx.clearRect(
+
+        0,
+
+        0,
+
+        heartCanvas.width,
+
+        heartCanvas.height
+
+    );
+
+    hearts.forEach(h=>{
+
+        h.update();
+
+        h.draw();
+
     });
+
+}
+
+/*=====================================================
+    STAR TWINKLE
+======================================================*/
+
+const stars=document.getElementById("stars");
+
+let starOpacity=.12;
+
+let starDirection=1;
+
+function updateStars(){
+
+    starOpacity+=0.0008*starDirection;
+
+    if(starOpacity>.22){
+
+        starDirection=-1;
+
+    }
+
+    if(starOpacity<.08){
+
+        starDirection=1;
+
+    }
+
+    stars.style.opacity=starOpacity;
+
+}
+
+/*=====================================================
+    PHOTO PULSE
+======================================================*/
+
+function beatPulse(){
+
+    if(audio.paused) return;
+
+    photo.animate(
+
+    [
+
+    {
+
+    transform:
+
+    photo.style.transform
+
+    },
+
+    {
+
+    transform:
+
+    photo.style.transform+
+
+    " scale(1.02)"
+
+    },
+
+    {
+
+    transform:
+
+    photo.style.transform
+
+    }
+
+    ],
+
+    {
+
+    duration:420,
+
+    easing:"ease-out"
+
+    }
+
+    );
+
+}
+
+setInterval(
+
+beatPulse,
+
+2100
+
+);
+
+/*=====================================================
+    FLASH TRANSITION
+======================================================*/
+
+const overlay=document.querySelector(".overlay");
+
+function flash(){
+
+    if(!overlay) return;
+
+    overlay.animate(
+
+    [
+
+    {
+
+    opacity:.55
+
+    },
+
+    {
+
+    opacity:.15
+
+    },
+
+    {
+
+    opacity:.55
+
+    }
+
+    ],
+
+    {
+
+    duration:450
+
+    }
+
+    );
+
+}
+
+/*=====================================================
+    PHOTO OBSERVER
+======================================================*/
+
+let lastPhoto=-1;
+
+function cinematicObserver(){
+
+    if(
+
+    state.currentPhoto!==lastPhoto
+
+    ){
+
+        lastPhoto=
+
+        state.currentPhoto;
+
+        flash();
+
+    }
+
+}
+
+/*=====================================================
+    LOW FPS FIX
+======================================================*/
+
+let last=0;
+
+function cinematicLoop(now){
+
+    const delta=now-last;
+
+    if(delta>16){
+
+        updateHeart();
+
+        updateStars();
+
+        cinematicObserver();
+
+        last=now;
+
+    }
+
+    requestAnimationFrame(
+
+    cinematicLoop
+
+    );
+
+}
+
+requestAnimationFrame(
+
+cinematicLoop
+
+);
+
+/*=====================================================
+    MUSIC BUTTON ROTATE
+======================================================*/
+
+musicBtn.addEventListener(
+
+"click",
+
+()=>{
+
+musicBtn.animate(
+
+[
+
+{
+
+transform:"rotate(0deg)"
+
+},
+
+{
+
+transform:"rotate(180deg)"
+
+},
+
+{
+
+transform:"rotate(360deg)"
+
+}
+
+],
+
+{
+
+duration:500
+
+}
+
+);
+
+}
+
+/*=====================================================
+    PARALLAX
+======================================================*/
+
+document.addEventListener(
+
+"mousemove",
+
+e=>{
+
+let x=
+
+(window.innerWidth/2-e.clientX)/45;
+
+let y=
+
+(window.innerHeight/2-e.clientY)/45;
+
+backgroundBlur.style.transform=
+
+`translate(${x}px,${y}px)
+ scale(1.2)`;
 
 });
 
-observer.observe(ending);
+/*=====================================================
+    MOBILE PARALLAX
+======================================================*/
+
+document.addEventListener(
+
+"touchmove",
+
+e=>{
+
+const t=e.touches[0];
+
+let x=
+
+(window.innerWidth/2-t.clientX)/70;
+
+let y=
+
+(window.innerHeight/2-t.clientY)/70;
+
+backgroundBlur.style.transform=
+
+`translate(${x}px,${y}px)
+ scale(1.2)`;
+
+});
+
+/*=====================================================
+    END PART 3
+======================================================*/
