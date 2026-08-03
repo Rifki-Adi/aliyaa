@@ -1,116 +1,217 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Her Special Day</title>
-    <!-- Nanti kita hubungkan ke file CSS di sini -->
-    <link rel="stylesheet" href="style.css">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>For My Favorite Person ❤️</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+        href="style.css">
+
 </head>
+
 <body>
 
-    <!-- Musik Latar (Disembunyikan) -->
-    <audio id="bg-music" loop>
-        <!-- Ganti 'lagu-romantis.mp3' dengan file musikmu nanti -->
-        <source src="lagu-romantis.mp3" type="audio/mpeg">
+    <!-- ========================= -->
+    <!-- LOADING SCREEN -->
+    <!-- ========================= -->
+
+    <div id="loading">
+
+        <div class="loader">
+
+            <div class="heart">
+                ❤️
+            </div>
+
+            <h2>Loading Memories...</h2>
+
+            <div class="loading-bar">
+
+                <div id="loadingFill"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- INTRO -->
+    <!-- ========================= -->
+
+    <section id="intro">
+
+        <div class="intro-bg"></div>
+
+        <div class="overlay"></div>
+
+        <div class="intro-content">
+
+            <h3>A Little Story</h3>
+
+            <h1>For My Favorite Person ❤️</h1>
+
+            <p>
+
+                Every picture tells a story.<br>
+                Every story reminds me of you.
+
+            </p>
+
+            <button id="startBtn">
+
+                Tap To Start
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- MAIN STORY -->
+    <!-- ========================= -->
+
+    <main id="story">
+
+        <!-- Background Blur -->
+
+        <div id="backgroundBlur"></div>
+
+        <!-- Gradient -->
+
+        <div id="gradient"></div>
+
+        <!-- Stars -->
+
+        <div id="stars"></div>
+
+        <!-- Hearts -->
+
+        <canvas id="heartCanvas"></canvas>
+
+        <!-- Progress -->
+
+        <div id="progressContainer">
+
+            <div id="progressBar"></div>
+
+        </div>
+
+        <!-- Photo -->
+
+        <section id="viewer">
+
+            <img
+                id="photo"
+                src="img/1.jpg"
+                alt="Photo">
+
+        </section>
+
+        <!-- Text -->
+
+        <section id="textContainer">
+
+            <h1 id="mainText">
+
+                My Favorite Person ❤️
+
+            </h1>
+
+            <p id="subText">
+
+                Every day with you
+                feels like the best day
+                of my life.
+
+            </p>
+
+        </section>
+
+        <!-- Music Button -->
+
+        <button id="musicBtn">
+
+            🔊
+
+        </button>
+
+    </main>
+
+    <!-- ========================= -->
+    <!-- ENDING -->
+    <!-- ========================= -->
+
+    <section id="ending">
+
+        <div class="overlay"></div>
+
+        <div class="ending-content">
+
+            <h1>
+
+                Forever Starts
+                With You ❤️
+
+            </h1>
+
+            <p>
+
+                Thank you for every smile.<br>
+                Thank you for every laugh.<br>
+                Thank you for every memory.
+
+            </p>
+
+            <button id="replayBtn">
+
+                Replay Story
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- AUDIO -->
+    <!-- ========================= -->
+
+    <audio
+        id="bgMusic"
+        preload="auto">
+
+        <source
+            src="music/favourite-girl.mp3"
+            type="audio/mpeg">
+
     </audio>
 
-    <!-- BAGIAN 1: Layar Hitung Mundur -->
-    <section id="countdown-screen" class="screen active">
-        <h4>✨ Menghitung Hari ✨</h4>
-        <h1>Her Special Day<br>is Coming</h1>
-        <p>Sesuatu yang indah sedang menunggu untukmu 🤍</p>
-        
-        <div class="timer-container">
-            <div class="time-box">
-                <span id="days">00</span>
-                <small>HARI</small>
-            </div>
-            <div class="time-box">
-                <span id="hours">00</span>
-                <small>JAM</small>
-            </div>
-            <div class="time-box">
-                <span id="minutes">00</span>
-                <small>MENIT</small>
-            </div>
-            <div class="time-box">
-                <span id="seconds">00</span>
-                <small>DETIK</small>
-            </div>
-        </div>
+    <!-- ========================= -->
+    <!-- SCRIPT -->
+    <!-- ========================= -->
 
-        <p class="wait-text">⏳ Beberapa detik lagi... 🤍</p>
-        <!-- Tombol ini awalnya bisa kita nonaktifkan sampai waktu habis -->
-        <button id="btn-open-gift" class="btn">✨ OPEN HER GIFT ✨</button>
-    </section>
-
-
-    <!-- BAGIAN 2: Layar Kado -->
-    <section id="gift-screen" class="screen hidden">
-        <p>✨ ADA SESUATU UNTUKMU ✨</p>
-        <div class="gift-box-container" id="gift-box">
-            <!-- Kamu bisa pakai emoji atau gambar kado di sini -->
-            <img src="gambar-kado.png" alt="Kado" class="gift-img">
-        </div>
-        <p>🎵 Klik untuk membuka kadonya 🎵</p>
-    </section>
-
-
-    <!-- BAGIAN 3: Layar Surat / Ucapan -->
-    <section id="letter-screen" class="screen hidden">
-        <h4>✨ A LOVE LETTER FOR YOU ✨</h4>
-        <h1>Your<br>Special Day</h1>
-        <p>Created with love, just for you</p>
-        
-        <div class="letter-content">
-            <h2>Happy Birthday</h2>
-            <p>Selamat ulang tahun yaa cintaa! Hari ini hari yang spesial banget karena hari ini adalah hari lahir orang yang paling berarti di hidupku.</p>
-            <p>Terima kasih udah selalu ada, udah bikin hari-hariku lebih bahagia...</p>
-            <!-- Tambahkan isi suratmu di sini -->
-            <p>I love you, today, tomorrow, and always. 🤍</p>
-        </div>
-
-        <button id="btn-next-gallery" class="btn">✨ OUR MEMORIES ✨</button>
-    </section>
-
-
-    <!-- BAGIAN 4: Layar Galeri Foto (Polaroid) -->
-    <section id="gallery-screen" class="screen hidden">
-        <h1>Our Memories</h1>
-        <p>✨ every moment captured in love ✨</p>
-        
-        <div class="polaroid-gallery">
-            <!-- Ganti src dengan foto-fotomu. Kita atur posisinya nanti di CSS -->
-            <div class="polaroid"><img src="foto1.jpg" alt="Memory 1"></div>
-            <div class="polaroid"><img src="foto2.jpg" alt="Memory 2"></div>
-            <div class="polaroid"><img src="foto3.jpg" alt="Memory 3"></div>
-            <div class="polaroid"><img src="foto4.jpg" alt="Memory 4"></div>
-            <div class="polaroid"><img src="foto5.jpg" alt="Memory 5"></div>
-            <div class="polaroid"><img src="foto6.jpg" alt="Memory 6"></div>
-        </div>
-
-        <button id="btn-next-video" class="btn">✨ WATCH VIDEO ✨</button>
-    </section>
-
-
-    <!-- BAGIAN 5: Layar Video Pesan -->
-    <section id="video-screen" class="screen hidden">
-        <h1>A Moment For You</h1>
-        <p>✨ a special video message ✨</p>
-        
-        <div class="video-container">
-            <!-- Ganti src dengan video ucapanmu -->
-            <video id="birthday-video" controls>
-                <source src="video-ucapan.mp4" type="video/mp4">
-                Browser kamu tidak mendukung pemutaran video.
-            </video>
-        </div>
-
-        <button id="btn-finish" class="btn">✨ BIRTHDAY WISHES ✨</button>
-    </section>
-
-    <!-- Nanti kita hubungkan ke file JavaScript di sini -->
     <script src="script.js"></script>
+
 </body>
+
 </html>
