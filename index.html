@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>For My Favorite Person ❤️</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- LOADING -->
+    <!-- ========================= -->
+
+    <div id="loading">
+
+        <div class="loader">
+
+            <div class="heart">❤️</div>
+
+            <h2>Loading Memories...</h2>
+
+            <div class="loading-bar">
+
+                <div id="loadingFill"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- INTRO -->
+    <!-- ========================= -->
+
+    <section id="intro">
+
+        <div class="intro-bg"></div>
+
+        <div class="overlay"></div>
+
+        <div class="intro-content">
+
+            <h3>A Little Story</h3>
+
+            <h1>For My Favorite Person ❤️</h1>
+
+            <p>
+                Every picture tells a story.<br>
+                Every story reminds me of you.
+            </p>
+
+            <button id="startBtn">
+                Tap To Start
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- STORY -->
+    <!-- ========================= -->
+
+    <main id="story">
+
+        <div id="backgroundBlur"></div>
+
+        <div id="gradient"></div>
+
+        <div id="stars"></div>
+
+        <canvas id="heartCanvas"></canvas>
+
+        <!-- Progress -->
+
+        <div id="progressContainer">
+
+            <div id="progressBar"></div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- PHOTO COLLAGE -->
+        <!-- ========================= -->
+
+        <section id="viewer">
+
+            <div class="photo-grid">
+
+                <img
+                    id="photo1"
+                    class="photo-item"
+                    src="img/1.jpg"
+                    alt="Photo 1">
+
+                <img
+                    id="photo2"
+                    class="photo-item"
+                    src="img/2.jpg"
+                    alt="Photo 2">
+
+                <img
+                    id="photo3"
+                    class="photo-item"
+                    src="img/3.jpg"
+                    alt="Photo 3">
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- TEXT -->
+        <!-- ========================= -->
+
+        <section id="textContainer">
+
+            <h1 id="mainText">
+                My Favorite Person ❤️
+            </h1>
+
+            <p id="subText">
+                Every day with you
+                feels like the best day
+                of my life.
+            </p>
+
+        </section>
+
+        <!-- Music -->
+
+        <button id="musicBtn">
+            🔊
+        </button>
+
+    </main>
+
+    <!-- ========================= -->
+    <!-- ENDING -->
+    <!-- ========================= -->
+
+    <section id="ending">
+
+        <div class="overlay"></div>
+
+        <div class="ending-content">
+
+            <h1>
+                Forever Starts With You ❤️
+            </h1>
+
+            <p>
+
+                Thank you for every smile.<br>
+                Thank you for every laugh.<br>
+                Thank you for every memory.
+
+            </p>
+
+            <button id="replayBtn">
+
+                Replay Story
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- AUDIO -->
+    <!-- ========================= -->
+
+    <audio id="bgMusic" preload="auto">
+
+        <source
+            src="music/favourite-girl.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <!-- ========================= -->
+    <!-- SCRIPT -->
+    <!-- ========================= -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
