@@ -1,5 +1,5 @@
 /*=====================================================
-    LOVE STORY (DENSE & RESPONSIVE FLOATING EDITION)
+    LOVE STORY (BALANCED & AESTHETIC EDITION)
     script.js
 ======================================================*/
 
@@ -51,7 +51,6 @@ for (let i = 1; i <= CONFIG.totalPhoto; i++) {
     photos.push(CONFIG.photoFolder + i + ".jpg");
 }
 
-// Menambahkan lebih banyak variasi kata-kata
 const phrases = [
     "stay with me", "I love you", "always with you", "forever",
     "I miss you", "you mean everything", "only you", "you are enough",
@@ -128,20 +127,17 @@ class Floater {
     reset(isInitial = false) {
         const isMobile = window.innerWidth < 768;
         
-        // Responsif: Batas X menyesuaikan lebar layar agar tidak terpotong (max 85% layar)
+        // Responsif: Batas X menyesuaikan lebar layar
         this.x = random(5, window.innerWidth * 0.85);
         
-        // COMPACT/PADAT: Jika initial, sebar rapat di area layar sampai sedikit ke bawah.
         if (isInitial) {
             this.y = random(-100, window.innerHeight * 1.5); 
         } else {
-            // Jika reset setelah keluar layar atas, munculkan persis di bawah layar
             this.y = window.innerHeight + random(50, 200); 
         }
 
-        // Kecepatan melayang (sedikit lebih bervariasi agar terlihat dinamis saat padat)
         this.speed = random(0.2, 0.9);
-        this.swing = random(-0.6, 0.6); // Goyangan ke kiri/kanan
+        this.swing = random(-0.6, 0.6); 
         this.swingOffset = random(0, Math.PI * 2);
         
         this.angle = this.type === 'img' ? random(-15, 15) : 0;
@@ -153,7 +149,6 @@ class Floater {
         this.y -= this.speed; 
         this.x += Math.sin(this.y * 0.01 + this.swingOffset) * this.swing;
 
-        // Reset ketika elemen sudah jauh melewati batas atas layar
         if (this.y < -250) {
             this.reset(false);
         }
@@ -185,18 +180,21 @@ function generateFloatingElements() {
         img.style.left = "0px";
         img.style.willChange = "transform";
         
-        // Ukuran gambar disesuaikan sedikit via JS agar lebih compact di HP
+        // FOTO DIPERKECIL AGAR PAS
         if (isMobile) {
-            img.style.width = "110px";
-            img.style.height = "110px";
+            img.style.width = "115px"; 
+            img.style.height = "115px";
+        } else {
+            img.style.width = "150px"; 
+            img.style.height = "150px";
         }
         
         scrollTrack.appendChild(img);
         floatElements.push(new Floater(img, 'img'));
     });
 
-    // 2. BUAT TEKS YANG MELAYANG (JUMLAH DIPERBANYAK AGAR PADAT)
-    const totalTexts = 80; // Diperbanyak menjadi 80 teks sekaligus
+    // 2. BUAT TEKS YANG MELAYANG (JUMLAH DIKURANGI AGAR TIDAK SUMPEK)
+    const totalTexts = 40; // Sebelumnya 80, dikurangi jadi 40
     for (let i = 0; i < totalTexts; i++) {
         const span = document.createElement("span");
         span.className = "scatter-text";
@@ -206,10 +204,8 @@ function generateFloatingElements() {
         span.style.top = "0px";
         span.style.left = "0px";
         
-        // Variasi warna teks (pink soft & putih semi-transparan)
         span.style.color = Math.random() > 0.6 ? "rgba(255, 170, 190, 0.85)" : "rgba(255, 255, 255, 0.65)";
         
-        // Ukuran font responsif (Desktop vs HP)
         if (isMobile) {
             span.style.fontSize = Math.random() > 0.5 ? "0.9rem" : "1.2rem";
         } else {
@@ -226,7 +222,6 @@ function generateFloatingElements() {
     }
 }
 
-// Regenerate saat layar di-resize agar posisinya menyesuaikan responsivitas
 window.addEventListener("resize", () => {
     if (state.started) {
         generateFloatingElements();
