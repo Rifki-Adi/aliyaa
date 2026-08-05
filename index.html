@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Favorite Person ❤️</title>
+
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+    <!-- ========================= -->
     <!-- LOADING SCREEN -->
+    <!-- ========================= -->
     <div id="loading">
         <div class="loader">
             <div class="heart">❤️</div>
             <h2>Loading Memories...</h2>
-            <div class="loading-bar"><div id="loadingFill"></div></div>
+            <div class="loading-bar">
+                <div id="loadingFill"></div>
+            </div>
         </div>
     </div>
 
+    <!-- ========================= -->
     <!-- INTRO -->
+    <!-- ========================= -->
     <section id="intro">
         <div class="intro-bg"></div>
         <div class="overlay"></div>
@@ -37,27 +47,31 @@
         </div>
     </section>
 
-    <!-- MAIN STORY -->
+    <!-- ========================= -->
+    <!-- MAIN STORY (SCATTERED SCROLL) -->
+    <!-- ========================= -->
     <main id="story">
+        <!-- Background Elements -->
         <div id="backgroundBlur"></div>
         <div id="gradient"></div>
-        
-        <!-- Wadah Gambar dan Teks yang Melayang Turun -->
-        <div id="fallingContainer"></div>
-        
+        <div id="stars"></div>
         <canvas id="heartCanvas"></canvas>
-        <div id="progressContainer"><div id="progressBar"></div></div>
 
-        <!-- Teks Cerita Utama (Berada di tengah/bawah layar) -->
-        <section id="textContainer">
-            <h1 id="mainText">My Favorite Person ❤️</h1>
-            <p id="subText">Every day with you feels like the best day of my life.</p>
-        </section>
+        <!-- Wadah untuk animasi slow scroll ke bawah -->
+        <div id="scrollWrapper">
+            <div id="scrollTrack">
+                <!-- Gambar dan teks yang posisinya tersebar (scattered) 
+                     akan di-generate dan dimasukkan ke sini melalui JavaScript -->
+            </div>
+        </div>
 
+        <!-- Music Button -->
         <button id="musicBtn">🔊</button>
     </main>
 
+    <!-- ========================= -->
     <!-- ENDING -->
+    <!-- ========================= -->
     <section id="ending">
         <div class="overlay"></div>
         <div class="ending-content">
@@ -71,10 +85,17 @@
         </div>
     </section>
 
+    <!-- ========================= -->
+    <!-- AUDIO -->
+    <!-- ========================= -->
     <audio id="bgMusic" preload="auto">
         <source src="music/favourite-girl.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- ========================= -->
+    <!-- SCRIPT -->
+    <!-- ========================= -->
     <script src="script.js"></script>
+
 </body>
 </html>
