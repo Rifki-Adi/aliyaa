@@ -1,557 +1,274 @@
 /*=====================================================
-    LOVE STORY
-    script.js
-    PART 1 - CORE
+    LOVE STORY - TIKTOK AESTHETIC FALLING SCROLL
 ======================================================*/
-
 "use strict";
-
-/*=====================================================
-    ELEMENT
-======================================================*/
 
 const loading = document.getElementById("loading");
 const loadingFill = document.getElementById("loadingFill");
-
 const intro = document.getElementById("intro");
 const story = document.getElementById("story");
 const ending = document.getElementById("ending");
-
 const startBtn = document.getElementById("startBtn");
 const replayBtn = document.getElementById("replayBtn");
 const musicBtn = document.getElementById("musicBtn");
-
 const backgroundBlur = document.getElementById("backgroundBlur");
-
-const photo = document.getElementById("photo");
+const fallingContainer = document.getElementById("fallingContainer");
 
 const mainText = document.getElementById("mainText");
 const subText = document.getElementById("subText");
-
 const progressBar = document.getElementById("progressBar");
-
 const audio = document.getElementById("bgMusic");
-
 const heartCanvas = document.getElementById("heartCanvas");
 const ctx = heartCanvas.getContext("2d");
 
-/*=====================================================
-    CONFIG
-======================================================*/
-
 const CONFIG = {
-
     photoFolder : "img/",
-
-    totalPhoto : 30,
-
-    photoDuration : 6,
-
-    transition : 800,
-
-    typingSpeed : 40,
-
+    totalPhoto : 30, 
     preload : true
-
 };
 
-/*=====================================================
-    PHOTO ARRAY
-======================================================*/
-
 const photos = [];
-
 for(let i=1;i<=CONFIG.totalPhoto;i++){
     photos.push(CONFIG.photoFolder+i+".jpg");
 }
 
-/*=====================================================
-    ROMANTIC MESSAGE
-======================================================*/
-
-const messages=[
-    { time:0, title:"My Favorite Person ❤️", text:"Every moment with you feels magical." },
-    { time:6, title:"My Happiness", text:"Thank you for making my days brighter." },
-    { time:12, title:"Beautiful Memories", text:"Every picture reminds me of you." },
-    { time:18, title:"My Safe Place", text:"Home is wherever you are." },
-    { time:24, title:"Forever", text:"Let's create more memories together." },
-    { time:30, title:"You & Me", text:"The best story has just begun." },
-    { time:36, title:"Always", text:"You are my favorite chapter." },
-    { time:42, title:"Thank You", text:"Thank you for everything." },
-    { time:48, title:"Love", text:"You are my favorite hello." },
-    { time:54, title:"Forever Starts With You ❤️", text:"I love you." }
+/* KATA-KATA REDUP BACKGROUND ALA TIKTOK */
+const backgroundPhrases = [
+    "stay with me", "i miss you", "always with you", "forever", 
+    "you mean everything", "only you", "you are enough", 
+    "my heart is yours", "thinking of u", "love u more", 
+    "always on my mind", "my favorite"
 ];
 
-/*=====================================================
-    APP STATE
-======================================================*/
+/* 30 CERITA UTAMA (DI TENGAH LAYAR) */
+const storyData = [
+    { title: "My Favorite Person ❤️", sub: "Awal dari semua memori indah kita." },
+    { title: "Sweetest Smile", sub: "Senyum yang selalu bikin hari-hariku jauh lebih baik." },
+    { title: "Perfect Moments", sub: "Setiap detik sama kamu itu berharga banget." },
+    { title: "Alasan Bahagiaku", sub: "Ketemu kamu adalah hal terbaik yang pernah terjadi." },
+    { title: "Dunia Milik Berdua", sub: "Kalau lagi sama kamu, kerasa dunia cuma punya kita." },
+    { title: "Inside & Out", sub: "Bukan cuma wajahnya, hatinya juga paling cantik." },
+    { title: "My Comfort Zone", sub: "Nggak ada tempat senyaman di dekatmu." },
+    { title: "Canda Tawa", sub: "Ketawa bareng kamu adalah terapi paling ampuh." },
+    { title: "Hal Kecil Berarti", sub: "Momen biasa jadi spesial karena ada kamu di sana." },
+    { title: "Selalu Ada", sub: "Makasih ya udah selalu nemenin dan dengerin aku." },
+    { title: "Hari Tak Terlupakan", sub: "Bakal selalu aku simpan rapi di ingatan." },
+    { title: "Paling Beruntung", sub: "Kadang mikir, kok bisa ya aku dapetin kamu?" },
+    { title: "Harta Karun", sub: "Kamu itu orang paling berharga buat aku." },
+    { title: "Penerang Hariku", sub: "Selalu bawa energi positif setiap saat." },
+    { title: "Selalu Cantik", sub: "Lagi candid aja tetep cantik, apalagi kalau senyum." },
+    { title: "Waktu Berlalu Cepat", sub: "Nggak pernah kerasa kalau lagi ngabisin waktu bareng kamu." },
+    { title: "Segalanya", sub: "Kamu lebih dari sekadar kata-kata manis." },
+    { title: "Bagian Terbaik", sub: "Kamu adalah chapter favorit di buku hidupku." },
+    { title: "Satu Frekuensi", sub: "Rasanya kayak udah kenal kamu dari dulu banget." },
+    { title: "Selalu Deg-degan", sub: "Jantung ini masih sering berdebar kalau liat mata kamu." },
+    { title: "Seperti Keajaiban", sub: "Hadirmu ngasih warna baru di hidupku." },
+    { title: "Cuma Kamu", sub: "Satu-satunya orang yang aku butuhin cuma kamu." },
+    { title: "Genggam Terus", sub: "Jangan pernah ngelepasin genggaman ini ya." },
+    { title: "Pelarian Terindah", sub: "Tempat istirahat terbaik dari capeknya dunia." },
+    { title: "Tak Ternilai", sub: "Momen kayak gini nggak bisa dibeli pakai apapun." },
+    { title: "Rumahku", sub: "Rumah itu bukan tempat, tapi kamu." },
+    { title: "Bahasa Cintaku", sub: "Biar foto-foto ini yang menjelaskan perasaanku." },
+    { title: "Tumbuh Bersama", sub: "Mari kita melangkah dan bahagia sama-sama." },
+    { title: "Aku Sayang Kamu", sub: "Tiga kata yang nggak akan pernah bosan aku bilang." },
+    { title: "Selamanya", sub: "Terima kasih untuk segalanya, cerita terbaik kita baru dimulai." }
+];
 
-const state={
-    started:false,
-    playing:false,
-    currentPhoto:-1,
-    currentMessage:-1,
-    loaded:0,
-    finished:false
-};
+const state={ started:false, playing:false, currentSet:-1, loaded:0, finished:false };
 
-/*=====================================================
-    CANVAS
-======================================================*/
-
-function resizeCanvas(){
-    heartCanvas.width=window.innerWidth;
-    heartCanvas.height=window.innerHeight;
-}
-
-resizeCanvas();
-window.addEventListener("resize",resizeCanvas);
-
-/*=====================================================
-    PRELOAD IMAGE
-======================================================*/
+function resizeCanvas(){ heartCanvas.width=window.innerWidth; heartCanvas.height=window.innerHeight; }
+resizeCanvas(); window.addEventListener("resize",resizeCanvas);
 
 function preloadImages(){
-    if(!CONFIG.preload){
-        loading.style.display="none";
-        return;
-    }
-
+    if(!CONFIG.preload){ loading.style.display="none"; return; }
     photos.forEach(src=>{
         const img=new Image();
         img.onload=function(){
             state.loaded++;
-            const percent=Math.floor((state.loaded/photos.length)*100);
-            loadingFill.style.width=percent+"%";
-
+            loadingFill.style.width=Math.floor((state.loaded/photos.length)*100)+"%";
             if(state.loaded===photos.length){
-                setTimeout(()=>{
-                    loading.style.opacity="0";
-                    setTimeout(()=>{
-                        loading.style.display="none";
-                    },800);
-                },400);
+                setTimeout(()=>{ loading.style.opacity="0"; setTimeout(()=>{ loading.style.display="none"; },800); },400);
             }
         };
         img.src=src;
     });
 }
-
 preloadImages();
-
-/*=====================================================
-    START STORY
-======================================================*/
 
 function startStory(){
     if(state.started) return;
-    state.started=true;
-    intro.style.display="none";
+    state.started=true; 
+    intro.style.display="none"; 
     story.style.display="block";
-    audio.play().catch(()=>{});
+    audio.play().catch(()=>{}); 
     state.playing=true;
 }
-
 startBtn.addEventListener("click", startStory);
 
-/*=====================================================
-    MUSIC BUTTON
-======================================================*/
-
 musicBtn.addEventListener("click", ()=>{
-    if(audio.paused){
-        audio.play();
-        musicBtn.innerHTML="🔊";
-        state.playing=true;
-    }else{
-        audio.pause();
-        musicBtn.innerHTML="🔇";
-        state.playing=false;
-    }
+    if(audio.paused){ audio.play(); musicBtn.innerHTML="🔊"; state.playing=true; } 
+    else { audio.pause(); musicBtn.innerHTML="🔇"; state.playing=false; }
+    musicBtn.animate([{ transform:"rotate(0deg)" }, { transform:"rotate(180deg)" }, { transform:"rotate(360deg)" }], { duration:500 });
 });
 
-/*=====================================================
-    RANDOM
-======================================================*/
-
-function random(min,max){
-    return Math.random()*(max-min)+min;
-}
-
-function randomInt(min,max){
-    return Math.floor(random(min,max));
-}
-
-/*=====================================================
-    TYPEWRITER (Bug Fixed)
-======================================================*/
+function random(min,max){ return Math.random()*(max-min)+min; }
+function randomInt(min,max){ return Math.floor(random(min,max)); }
 
 function typing(element, text, speed) {
-    clearTimeout(element.typingTimer);
-    element.innerHTML = "";
-    let i = 0;
-
+    clearTimeout(element.typingTimer); element.innerHTML = ""; let i = 0;
     function write() {
-        if (i >= text.length) {
-            return;
-        }
-        element.innerHTML += text.charAt(i);
-        i++;
+        if (i >= text.length) return;
+        element.innerHTML += text.charAt(i); i++;
         element.typingTimer = setTimeout(write, speed);
     }
     write();
 }
 
-/*=====================================================
-    END PART 1
-======================================================*/
-
-/*=====================================================
-    LOVE STORY
-    PART 2 (REVISED)
-======================================================*/
-
-let photoDuration = CONFIG.photoDuration;
-
-/*=====================================================
-    INIT DURATION
-======================================================*/
-
-audio.addEventListener("loadedmetadata",()=>{
-    photoDuration = audio.duration / photos.length;
-});
-
-/*=====================================================
-    KEN BURNS
-======================================================*/
-
-const burns=[
-    "scale(1.10) translate(0px,0px)",
-    "scale(1.15) translate(-25px,0px)",
-    "scale(1.15) translate(25px,0px)",
-    "scale(1.12) translate(0px,-20px)",
-    "scale(1.12) translate(0px,20px)",
-    "scale(1.18) translate(-20px,-20px)",
-    "scale(1.18) translate(20px,20px)",
-    "scale(1.16) translate(-15px,25px)",
-    "scale(1.16) translate(15px,-25px)"
-];
-
-function applyKenBurns(){
-    photo.style.transition="opacity .8s ease, filter .8s ease, transform 8s linear";
-    photo.style.transform=burns[randomInt(0,burns.length)];
+/* ====================================================
+   FUNGSI SPAWN GAMBAR & TEKS JATUH ALA TIKTOK
+==================================================== */
+let lastSpawnTime = 0;
+function spawnFallingItems(now) {
+    if (!state.playing) return;
+    
+    // Memunculkan gambar/teks baru setiap 1.5 detik
+    if (now - lastSpawnTime > 1500) {
+        spawnImage();
+        spawnText();
+        lastSpawnTime = now;
+    }
 }
 
-/*=====================================================
-    CHANGE PHOTO
-======================================================*/
+function spawnImage() {
+    const img = document.createElement("img");
+    img.src = photos[randomInt(0, photos.length)];
+    img.className = "fall-item fall-img";
 
-function changePhoto(index){
-    if(index===state.currentPhoto) return;
-    state.currentPhoto=index;
+    // Ukuran bervariasi (Kecil - Sedang)
+    const size = randomInt(90, 180);
+    img.style.width = size + "px";
+    img.style.height = size + "px";
+    
+    // Posisi horizontal acak (0% sampai 85%)
+    img.style.left = randomInt(0, 85) + "%";
+    
+    // Durasi jatuh (lebih lama = lebih pelan)
+    const duration = randomInt(18, 28);
+    img.style.animationDuration = duration + "s";
+    
+    fallingContainer.appendChild(img);
 
-    photo.style.opacity=0;
-    photo.style.filter="blur(12px)";
-
-    setTimeout(()=>{
-        photo.src=photos[index];
-        backgroundBlur.style.backgroundImage=`url('${photos[index]}')`;
-        applyKenBurns();
-        
-        photo.onload=()=>{
-            photo.style.opacity=1;
-            photo.style.filter="blur(0px)";
-        };
-    },250);
+    // Hapus elemen saat sudah selesai jatuh (menghemat memori)
+    setTimeout(() => { img.remove(); }, duration * 1000);
 }
 
-/*=====================================================
-    NEXT IMAGE PRELOAD
-======================================================*/
+function spawnText() {
+    const txt = document.createElement("div");
+    txt.innerText = backgroundPhrases[randomInt(0, backgroundPhrases.length)];
+    txt.className = "fall-item fall-text";
 
-function preloadNext(index){
-    if(index+1>=photos.length) return;
-    const img=new Image();
-    img.src=photos[index+1];
+    // Ukuran font dan transparansi acak
+    txt.style.fontSize = randomInt(14, 26) + "px";
+    txt.style.opacity = random(0.2, 0.6);
+    txt.style.left = randomInt(0, 80) + "%";
+    
+    const duration = randomInt(15, 25);
+    txt.style.animationDuration = duration + "s";
+    
+    fallingContainer.appendChild(txt);
+    setTimeout(() => { txt.remove(); }, duration * 1000);
 }
 
-/*=====================================================
-    UPDATE PHOTO
-======================================================*/
-
-function updatePhoto(){
+/* ====================================================
+   UPDATE TEKS UTAMA (SINKRON DENGAN LAGU)
+==================================================== */
+function updateMainStory(){
     if(!audio.duration) return;
+    const photoDuration = audio.duration / storyData.length;
+    let setIndex = Math.floor(audio.currentTime / photoDuration);
+    if(setIndex >= storyData.length) setIndex = storyData.length - 1;
 
-    let index=Math.floor(audio.currentTime / photoDuration);
+    if(setIndex !== state.currentSet){
+        state.currentSet = setIndex;
+        let currentData = storyData[setIndex];
+        
+        typing(mainText, currentData.title, 45);
+        setTimeout(()=>{ typing(subText, currentData.sub, 20); }, 350);
 
-    if(index>=photos.length){
-        index=photos.length-1;
-    }
-
-    if(index!==state.currentPhoto){
-        changePhoto(index);
-        preloadNext(index);
-    }
-}
-
-/*=====================================================
-    UPDATE MESSAGE
-======================================================*/
-
-function updateMessage(){
-    const current=audio.currentTime;
-
-    for(let i=messages.length-1;i>=0;i--){
-        if(current>=messages[i].time){
-            if(state.currentMessage!==i){
-                state.currentMessage=i;
-
-                typing(mainText, messages[i].title, 45);
-
-                setTimeout(()=>{
-                    typing(subText, messages[i].text, 20);
-                },350);
-            }
-            break;
-        }
+        // Ubah background blur tipis
+        backgroundBlur.style.backgroundImage = `url('${photos[setIndex % photos.length]}')`;
     }
 }
-
-/*=====================================================
-    PROGRESS
-======================================================*/
 
 function updateProgress(){
     if(!audio.duration) return;
     progressBar.style.width=((audio.currentTime/audio.duration)*100)+"%";
 }
 
-/*=====================================================
-    ENGINE
-======================================================*/
-
-function storyLoop(){
-    if(state.playing){
-        updatePhoto();
-        updateMessage();
-        updateProgress();
+function storyLoop(now){
+    if(state.playing){ 
+        spawnFallingItems(now); // Panggil efek jatuh
+        updateMainStory();      // Update teks utama
+        updateProgress(); 
     }
     requestAnimationFrame(storyLoop);
 }
-
 requestAnimationFrame(storyLoop);
 
-/*=====================================================
-    ENDING
-======================================================*/
-
 audio.addEventListener("ended", ()=>{
-    state.finished=true;
+    state.finished=true; 
     state.playing=false;
-    story.style.display="none";
+    story.style.display="none"; 
     ending.style.display="flex";
+    fallingContainer.innerHTML = ""; // Bersihkan layar
 });
 
-/*=====================================================
-    REPLAY
-======================================================*/
-
 replayBtn.addEventListener("click", ()=>{
-    audio.currentTime=0;
-    state.finished=false;
-    state.playing=true;
-    state.currentPhoto=-1;
-    state.currentMessage=-1;
-    progressBar.style.width="0%";
-    photo.style.transform="scale(1)";
-    ending.style.display="none";
+    audio.currentTime=0; 
+    state.finished=false; 
+    state.playing=true; 
+    state.currentSet=-1;
+    progressBar.style.width="0%"; 
+    ending.style.display="none"; 
     story.style.display="block";
     audio.play();
 });
 
-/*=====================================================
-    LOVE STORY
-    PART 3
-    CINEMATIC EFFECT
-======================================================*/
-
-/*=====================================================
-    HEART PARTICLE
-======================================================*/
-
+/* EFEK PARTIKEL HATI KECIL */
 const hearts=[];
-
 class Heart{
-    constructor(){
-        this.reset();
+    constructor(){ this.reset(); }
+    reset(){ 
+        this.x=random(0,heartCanvas.width); 
+        this.y=heartCanvas.height+50; 
+        this.size=random(8,20); 
+        this.speed=random(.2,.8); 
+        this.alpha=random(.1,.5); 
+        this.swing=random(-1,1); 
     }
-
-    reset(){
-        this.x=random(0,heartCanvas.width);
-        this.y=heartCanvas.height+50;
-        this.size=random(12,28);
-        this.speed=random(.4,1.2);
-        this.alpha=random(.2,.8);
-        this.swing=random(-1,1);
+    update(){ 
+        this.y-=this.speed; 
+        this.x+=Math.sin(this.y*.02)*this.swing; 
+        if(this.y<-50) this.reset(); 
     }
-
-    update(){
-        this.y-=this.speed;
-        this.x+=Math.sin(this.y*.02)*this.swing;
-        if(this.y<-50){
-            this.reset();
-        }
-    }
-
-    draw(){
-        ctx.save();
-        ctx.globalAlpha=this.alpha;
-        ctx.font=this.size+"px serif";
-        ctx.fillStyle="#ff6b9d";
-        ctx.fillText("❤",this.x,this.y);
-        ctx.restore();
+    draw(){ 
+        ctx.save(); 
+        ctx.globalAlpha=this.alpha; 
+        ctx.font=this.size+"px serif"; 
+        ctx.fillStyle="#ff6b9d"; 
+        ctx.fillText("❤",this.x,this.y); 
+        ctx.restore(); 
     }
 }
+for(let i=0;i<20;i++) hearts.push(new Heart());
 
-for(let i=0;i<35;i++){
-    hearts.push(new Heart());
-}
-
-/*=====================================================
-    HEART ENGINE
-======================================================*/
-
-function updateHeart(){
-    ctx.clearRect(0,0,heartCanvas.width,heartCanvas.height);
-    hearts.forEach(h=>{
-        h.update();
-        h.draw();
-    });
-}
-
-/*=====================================================
-    STAR TWINKLE
-======================================================*/
-
-const stars=document.getElementById("stars");
-let starOpacity=.12;
-let starDirection=1;
-
-function updateStars(){
-    starOpacity+=0.0008*starDirection;
-    if(starOpacity>.22){
-        starDirection=-1;
-    }
-    if(starOpacity<.08){
-        starDirection=1;
-    }
-    stars.style.opacity=starOpacity;
-}
-
-/*=====================================================
-    PHOTO PULSE
-======================================================*/
-
-function beatPulse(){
-    if(audio.paused) return;
-    photo.animate(
-        [
-            { transform: photo.style.transform },
-            { transform: photo.style.transform + " scale(1.02)" },
-            { transform: photo.style.transform }
-        ],
-        { duration:420, easing:"ease-out" }
-    );
-}
-
-setInterval(beatPulse,2100);
-
-/*=====================================================
-    FLASH TRANSITION
-======================================================*/
-
-const overlay=document.querySelector(".overlay");
-
-function flash(){
-    if(!overlay) return;
-    overlay.animate(
-        [
-            { opacity:.55 },
-            { opacity:.15 },
-            { opacity:.55 }
-        ],
-        { duration:450 }
-    );
-}
-
-/*=====================================================
-    PHOTO OBSERVER
-======================================================*/
-
-let lastPhoto=-1;
-
-function cinematicObserver(){
-    if(state.currentPhoto!==lastPhoto){
-        lastPhoto=state.currentPhoto;
-        flash();
-    }
-}
-
-/*=====================================================
-    LOW FPS FIX
-======================================================*/
-
-let last=0;
-
+let lastCinematic=0;
 function cinematicLoop(now){
-    const delta=now-last;
-    if(delta>16){
-        updateHeart();
-        updateStars();
-        cinematicObserver();
-        last=now;
+    if(now - lastCinematic > 16){ 
+        ctx.clearRect(0,0,heartCanvas.width,heartCanvas.height); 
+        hearts.forEach(h=>{ h.update(); h.draw(); }); 
+        lastCinematic=now; 
     }
     requestAnimationFrame(cinematicLoop);
 }
-
 requestAnimationFrame(cinematicLoop);
-
-/*=====================================================
-    MUSIC BUTTON ROTATE (Bug Fixed)
-======================================================*/
-
-musicBtn.addEventListener("click", ()=>{
-    musicBtn.animate(
-        [
-            { transform:"rotate(0deg)" },
-            { transform:"rotate(180deg)" },
-            { transform:"rotate(360deg)" }
-        ],
-        { duration:500 }
-    );
-});
-
-/*=====================================================
-    PARALLAX
-======================================================*/
-
-document.addEventListener("mousemove", e=>{
-    let x=(window.innerWidth/2-e.clientX)/45;
-    let y=(window.innerHeight/2-e.clientY)/45;
-    backgroundBlur.style.transform=`translate(${x}px,${y}px) scale(1.2)`;
-});
-
-/*=====================================================
-    MOBILE PARALLAX
-======================================================*/
-
-document.addEventListener("touchmove", e=>{
-    const t=e.touches[0];
-    let x=(window.innerWidth/2-t.clientX)/70;
-    let y=(window.innerHeight/2-t.clientY)/70;
-    backgroundBlur.style.transform=`translate(${x}px,${y}px) scale(1.2)`;
-});
-
-/*=====================================================
-    END PART 3
-======================================================*/
