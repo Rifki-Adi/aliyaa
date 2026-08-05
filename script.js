@@ -1,5 +1,5 @@
 /*=====================================================
-    LOVE STORY (SLOW SCROLL & ALTERNATING EDITION)
+    LOVE STORY (FLOATING AESTHETIC EDITION)
     script.js
 ======================================================*/
 
@@ -32,17 +32,15 @@ const ctx = heartCanvas.getContext("2d");
 ======================================================*/
 const CONFIG = {
     photoFolder: "img/",
-    totalPhoto: 30, // Pastikan jumlah foto sesuai
-    preload: true,
-    spacing: 400 // Jarak antar foto agar muncul bergantian (dalam px)
+    totalPhoto: 30, // Jumlah foto
+    preload: true
 };
 
 const state = {
     started: false,
     playing: false,
     loaded: 0,
-    finished: false,
-    trackHeight: 0
+    finished: false
 };
 
 /*=====================================================
@@ -113,81 +111,116 @@ function randomInt(min, max) {
 }
 
 /*=====================================================
-    GENERATE SCROLLING LAYOUT
+    FLOATING ELEMENTS (IMAGES & TEXTS)
 ======================================================*/
-function generateScatteredElements() {
-    scrollTrack.innerHTML = "";
-    
-    // Hitung total tinggi track berdasarkan jumlah foto dan jaraknya
-    state.trackHeight = window.innerHeight + (photos.length * CONFIG.spacing);
-    scrollTrack.style.width = "100%";
-    scrollTrack.style.height = state.trackHeight + "px";
+let floatElements = [];
 
-    // 1. SEBARKAN FOTO (Muncul Bergantian dari atas ke bawah)
-    photos.forEach((src, i) => {
+class Floater {
+    constructor(el, type) {
+        this.el = el;
+        this.type = type; // 'img' atau 'text'
+        this.reset(true);
+    }
+
+    reset(isInitial = false) {
+        // Posisi X diacak sepanjang lebar layar
+        this.x = random(10, window.innerWidth - 180);
+        
+        // Jika baru dimulai, sebar secara acak di seluruh layar. 
+        // Jika reset (karena keluar layar), mulai dari bawah layar.
+        if (isInitial) {
+            this.y = random(0, window.innerHeight * 2); // Tersebar jauh ke bawah
+        } else {
+            this.y = window.innerHeight + 150; // Muncul dari bawah
+        }
+
+        // Kecepatan melayang (sangat lambat seperti hati)
+        this.speed = random(0.3, 0.8);
+        this.swing = random(-0.5, 0.5); // Goyangan ke kiri/kanan
+        this.swingOffset = random(0, Math.PI * 2);
+        
+        // Gambar punya kemiringan rotasi, teks lurus
+        this.angle = this.type === 'img' ? random(-15, 15) : 0;
+    }
+
+    update() {
+        if (!state.playing) return;
+        
+        // Bergerak ke atas seperti emot hati
+        this.y -= this.speed; 
+        // Gerakan mengayun (kiri - kanan)
+        this.x += Math.sin(this.y * 0.01 + this.swingOffset) * this.swing;
+
+        // Jika sudah melewati batas atas layar, reset ke bawah lagi
+        if (this.y < -250) {
+            this.reset(false);
+        }
+    }
+
+    render() {
+        this.el.style.transform = `translate(${this.x}px, ${this.y}px) rotate(${this.angle}deg)`;
+    }
+}
+
+function generateFloatingElements() {
+    scrollTrack.innerHTML = "";
+    floatElements = [];
+
+    // Pastikan wadah memenuhi layar
+    scrollTrack.style.width = "100vw";
+    scrollTrack.style.height = "100vh";
+    scrollTrack.style.position = "absolute";
+    scrollTrack.style.overflow = "hidden";
+
+    // 1. BUAT GAMBAR YANG MELAYANG
+    photos.forEach((src) => {
         const img = document.createElement("img");
         img.src = src;
         img.className = "scatter-img";
-        
-        // Posisi X diacak (kiri - tengah - kanan)
-        const xPos = random(10, 60); 
-        
-        // Posisi Y diatur bertingkat agar foto muncul satu per satu
-        const baseY = (window.innerHeight / 1.5) + (i * CONFIG.spacing);
-        const yPos = baseY + random(-50, 50);
-
-        // Sedikit kemiringan agar natural
-        const rotation = random(-12, 12);
-
-        img.style.left = xPos + "%";
-        img.style.top = yPos + "px";
-        img.style.transform = `rotate(${rotation}deg)`;
+        // Styling inline agar aman dari CSS
+        img.style.position = "absolute";
+        img.style.top = "0px";
+        img.style.left = "0px";
+        img.style.willChange = "transform";
         
         scrollTrack.appendChild(img);
+        floatElements.push(new Floater(img, 'img'));
     });
 
-    // 2. SEBARKAN TEKS (Mengikuti tinggi track agar selalu ada teks saat scroll)
-    const totalTexts = photos.length * 4; 
+    // 2. BUAT TEKS YANG MELAYANG (Muncul!)
+    const totalTexts = 25; 
     for (let i = 0; i < totalTexts; i++) {
         const span = document.createElement("span");
         span.className = "scatter-text";
-        
-        if (Math.random() > 0.70) {
-            span.classList.add("highlight");
-        }
-
         span.innerText = phrases[randomInt(0, phrases.length)];
-
-        const xPos = random(5, 75);
-        // Teks disebar merata di seluruh panjang track vertikal
-        const yPos = random(window.innerHeight / 2, state.trackHeight - 200);
-
-        span.style.left = xPos + "%";
-        span.style.top = yPos + "px";
         
+        // Styling inline untuk menjamin teks terlihat (Warna terang)
+        span.style.position = "absolute";
+        span.style.top = "0px";
+        span.style.left = "0px";
+        span.style.color = Math.random() > 0.7 ? "rgba(255, 180, 200, 0.9)" : "rgba(255, 255, 255, 0.7)";
+        span.style.fontSize = Math.random() > 0.5 ? "1.2rem" : "1.6rem";
+        span.style.fontWeight = "300";
+        span.style.letterSpacing = "1px";
+        span.style.willChange = "transform";
+        span.style.whiteSpace = "nowrap";
+
         scrollTrack.appendChild(span);
+        floatElements.push(new Floater(span, 'text'));
     }
 }
 
 audio.addEventListener("loadedmetadata", () => {
-    generateScatteredElements();
+    if (floatElements.length === 0) generateFloatingElements();
 });
 
 /*=====================================================
-    ENGINE (SLOW SCROLL ANIMATION)
+    PROGRESS BAR SYNC
 ======================================================*/
 function storyLoop() {
     if (state.playing && audio.duration) {
         const progress = audio.currentTime / audio.duration;
-        
-        // Progress bar jalan
         progressBar.style.width = (progress * 100) + "%";
-
-        // Animasi Scroll perlahan ke atas (menciptakan ilusi kamera turun)
-        const maxScroll = state.trackHeight - window.innerHeight + 150; 
-        const currentScroll = progress * maxScroll;
-        
-        scrollTrack.style.transform = `translateY(-${currentScroll}px)`;
     }
     requestAnimationFrame(storyLoop);
 }
@@ -202,8 +235,8 @@ function startStory() {
     intro.style.display = "none";
     story.style.display = "block";
     
-    if (scrollTrack.innerHTML === "") {
-        generateScatteredElements();
+    if (floatElements.length === 0) {
+        generateFloatingElements();
     }
 
     audio.play().catch(() => {});
@@ -241,11 +274,10 @@ replayBtn.addEventListener("click", () => {
     state.finished = false;
     state.playing = true;
     progressBar.style.width = "0%";
-    scrollTrack.style.transform = "translateY(0px)";
     ending.style.display = "none";
     story.style.display = "block";
     
-    generateScatteredElements(); 
+    generateFloatingElements(); 
     audio.play();
 });
 
@@ -291,13 +323,25 @@ function updateStars() {
     stars.style.opacity = starOpacity;
 }
 
+// ALL ANIMATIONS (Hearts, Stars, Texts, and Images) RUN HERE!
 let last = 0;
 function cinematicLoop(now) {
     const delta = now - last;
-    if (delta > 16) {
+    if (delta > 16) { // Batas ~60 FPS
         ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+        
+        // Update & Render Hati
         hearts.forEach(h => { h.update(); h.draw(); });
+        
+        // Update Bintang
         updateStars();
+        
+        // Update & Render Gambar dan Teks secara berkesinambungan
+        floatElements.forEach(f => {
+            f.update();
+            f.render();
+        });
+
         last = now;
     }
     requestAnimationFrame(cinematicLoop);
