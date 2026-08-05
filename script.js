@@ -1,5 +1,5 @@
 /*=====================================================
-    LOVE STORY (SCATTERED SCROLL EDITION)
+    LOVE STORY (STATIC COLLAGE EDITION)
     script.js
 ======================================================*/
 
@@ -33,16 +33,14 @@ const ctx = heartCanvas.getContext("2d");
 const CONFIG = {
     photoFolder: "img/",
     totalPhoto: 30, // Pastikan jumlah foto sesuai dengan foldermu
-    preload: true,
-    spacing: 350 // Jarak vertikal rata-rata antar foto (dalam pixel)
+    preload: true
 };
 
 const state = {
     started: false,
     playing: false,
     loaded: 0,
-    finished: false,
-    trackHeight: 0
+    finished: false
 };
 
 /*=====================================================
@@ -53,7 +51,6 @@ for (let i = 1; i <= CONFIG.totalPhoto; i++) {
     photos.push(CONFIG.photoFolder + i + ".jpg");
 }
 
-// Kata-kata yang akan disebar secara acak (berdasarkan referensimu)
 const phrases = [
     "stay with me", "I love you", "always with you", "forever",
     "I miss you", "you mean everything", "only you", "you are enough",
@@ -114,78 +111,70 @@ function randomInt(min, max) {
 }
 
 /*=====================================================
-    GENERATE SCATTERED LAYOUT
+    GENERATE STATIC SCATTERED LAYOUT
 ======================================================*/
 function generateScatteredElements() {
-    // Kosongkan track jika sudah ada isinya (untuk replay)
     scrollTrack.innerHTML = "";
+    
+    // Set wadah agar seukuran persis dengan 1 layar (viewport)
+    scrollTrack.style.width = "100vw";
+    scrollTrack.style.height = "100vh";
 
-    // Hitung total tinggi area scroll
-    state.trackHeight = photos.length * CONFIG.spacing + window.innerHeight;
-    scrollTrack.style.height = state.trackHeight + "px";
-
-    // 1. SEBARKAN FOTO
-    photos.forEach((src, i) => {
+    // 1. SEBARKAN SEMUA FOTO DALAM 1 LAYAR
+    photos.forEach((src) => {
         const img = document.createElement("img");
         img.src = src;
         img.className = "scatter-img";
         
-        // Posisi X acak antara 5% - 70% agar tidak keluar layar
-        const xPos = randomInt(5, 70); 
-        // Posisi Y didistribusikan sepanjang tinggi track dengan sedikit variasi
-        const baseY = (i * CONFIG.spacing) + (window.innerHeight / 2);
-        const yPos = baseY + randomInt(-50, 50);
+        // Posisi acak persentase agar merata di layar (0% s/d 75% agar tidak terpotong habis di kanan/bawah)
+        const xPos = random(2, 75); 
+        const yPos = random(5, 75);
+
+        // Tambahkan rotasi acak sedikit agar terlihat seperti kolase foto yang dilempar
+        const rotation = random(-15, 15);
 
         img.style.left = xPos + "%";
-        img.style.top = yPos + "px";
+        img.style.top = yPos + "%";
+        img.style.transform = `rotate(${rotation}deg)`;
+        
         scrollTrack.appendChild(img);
     });
 
-    // 2. SEBARKAN TEKS (Jumlahnya dibikin banyak agar memenuhi layar)
-    const totalTexts = photos.length * 4; // 4 teks untuk setiap foto
+    // 2. SEBARKAN TEKS (Jumlah dibatasi 25 agar tidak terlalu menutupi 30 foto)
+    const totalTexts = 25; 
     for (let i = 0; i < totalTexts; i++) {
         const span = document.createElement("span");
         span.className = "scatter-text";
         
-        // Buat beberapa teks menjadi highlight (lebih besar & warna pink soft)
-        if (Math.random() > 0.75) {
+        if (Math.random() > 0.70) {
             span.classList.add("highlight");
         }
 
         span.innerText = phrases[randomInt(0, phrases.length)];
 
-        const xPos = randomInt(2, 75);
-        const yPos = randomInt(100, state.trackHeight - 100);
+        // Teks disebar ke seluruh area layar
+        const xPos = random(2, 80);
+        const yPos = random(5, 90);
 
         span.style.left = xPos + "%";
-        span.style.top = yPos + "px";
+        span.style.top = yPos + "%";
+        
         scrollTrack.appendChild(span);
     }
 }
 
-// Generate elemen setelah metadata lagu dimuat agar kita siap jalan
 audio.addEventListener("loadedmetadata", () => {
     generateScatteredElements();
 });
 
 /*=====================================================
-    SCROLL ENGINE (SYNC WITH MUSIC)
+    ENGINE (PROGRESS BAR ONLY, NO SCROLL)
 ======================================================*/
 function storyLoop() {
     if (state.playing && audio.duration) {
-        // Hitung persentase lagu
+        // Hanya update progress bar, tidak ada pergerakan posisi gambar/teks
         const progress = audio.currentTime / audio.duration;
-        
-        // Update Progress Bar
         progressBar.style.width = (progress * 100) + "%";
-
-        // Hitung batas maksimal scroll agar elemen terakhir tidak kepotong
-        const maxScroll = state.trackHeight - window.innerHeight + 150; 
-        const currentScroll = progress * maxScroll;
-
-        // Gerakkan track ke atas (translateY negatif) 
-        // untuk menciptakan ilusi kamera turun ke bawah (scroll kebawah)
-        scrollTrack.style.transform = `translateY(-${currentScroll}px)`;
     }
     requestAnimationFrame(storyLoop);
 }
@@ -200,7 +189,6 @@ function startStory() {
     intro.style.display = "none";
     story.style.display = "block";
     
-    // Pastikan elemen sudah ter-generate (jaga-jaga jika loadedmetadata telat)
     if (scrollTrack.innerHTML === "") {
         generateScatteredElements();
     }
@@ -222,7 +210,6 @@ musicBtn.addEventListener("click", () => {
         state.playing = false;
     }
     
-    // Animasi putar tombol
     musicBtn.animate(
         [ { transform: "rotate(0deg)" }, { transform: "rotate(360deg)" } ],
         { duration: 500 }
@@ -241,28 +228,25 @@ replayBtn.addEventListener("click", () => {
     state.finished = false;
     state.playing = true;
     progressBar.style.width = "0%";
-    scrollTrack.style.transform = "translateY(0px)";
     ending.style.display = "none";
     story.style.display = "block";
     
-    generateScatteredElements(); // Acak ulang posisinya biar tidak bosan
+    generateScatteredElements(); // Acak ulang posisinya setiap replay
     audio.play();
 });
 
 /*=====================================================
     CINEMATIC EFFECTS (HEARTS & STARS)
 ======================================================*/
-
-// 1. PARTIKEL HATI
 const hearts = [];
 class Heart {
     constructor() { this.reset(); }
     reset() {
         this.x = random(0, heartCanvas.width);
         this.y = heartCanvas.height + 50;
-        this.size = random(10, 22); // Diperkecil sedikit agar tidak menutupi teks
+        this.size = random(10, 22);
         this.speed = random(0.3, 0.8);
-        this.alpha = random(0.1, 0.4); // Lebih transparan
+        this.alpha = random(0.1, 0.4);
         this.swing = random(-0.5, 0.5);
     }
     update() {
@@ -282,7 +266,6 @@ class Heart {
 }
 for (let i = 0; i < 25; i++) hearts.push(new Heart());
 
-// 2. BINTANG BERKEDIP
 const stars = document.getElementById("stars");
 let starOpacity = 0.10;
 let starDirection = 1;
@@ -294,7 +277,6 @@ function updateStars() {
     stars.style.opacity = starOpacity;
 }
 
-// 3. LOW FPS FIX UNTUK EFEK
 let last = 0;
 function cinematicLoop(now) {
     const delta = now - last;
