@@ -1,5 +1,5 @@
 /*=====================================================
-    LOVE STORY (FLOATING AESTHETIC EDITION)
+    LOVE STORY (DENSE & RESPONSIVE FLOATING EDITION)
     script.js
 ======================================================*/
 
@@ -51,12 +51,15 @@ for (let i = 1; i <= CONFIG.totalPhoto; i++) {
     photos.push(CONFIG.photoFolder + i + ".jpg");
 }
 
+// Menambahkan lebih banyak variasi kata-kata
 const phrases = [
     "stay with me", "I love you", "always with you", "forever",
     "I miss you", "you mean everything", "only you", "you are enough",
     "my heart is yours", "the best of us", "always on my mind",
     "mean so much", "my favorite person", "beautiful memories",
-    "you & me", "my safe place", "always", "thank you"
+    "you & me", "my safe place", "always", "thank you",
+    "never let you go", "endless love", "my world", "just the two of us",
+    "perfect together", "sweetest moments", "holding hands", "my sunshine"
 ];
 
 /*=====================================================
@@ -123,35 +126,34 @@ class Floater {
     }
 
     reset(isInitial = false) {
-        // Posisi X diacak sepanjang lebar layar
-        this.x = random(10, window.innerWidth - 180);
+        const isMobile = window.innerWidth < 768;
         
-        // Jika baru dimulai, sebar secara acak di seluruh layar. 
-        // Jika reset (karena keluar layar), mulai dari bawah layar.
+        // Responsif: Batas X menyesuaikan lebar layar agar tidak terpotong (max 85% layar)
+        this.x = random(5, window.innerWidth * 0.85);
+        
+        // COMPACT/PADAT: Jika initial, sebar rapat di area layar sampai sedikit ke bawah.
         if (isInitial) {
-            this.y = random(0, window.innerHeight * 2); // Tersebar jauh ke bawah
+            this.y = random(-100, window.innerHeight * 1.5); 
         } else {
-            this.y = window.innerHeight + 150; // Muncul dari bawah
+            // Jika reset setelah keluar layar atas, munculkan persis di bawah layar
+            this.y = window.innerHeight + random(50, 200); 
         }
 
-        // Kecepatan melayang (sangat lambat seperti hati)
-        this.speed = random(0.3, 0.8);
-        this.swing = random(-0.5, 0.5); // Goyangan ke kiri/kanan
+        // Kecepatan melayang (sedikit lebih bervariasi agar terlihat dinamis saat padat)
+        this.speed = random(0.2, 0.9);
+        this.swing = random(-0.6, 0.6); // Goyangan ke kiri/kanan
         this.swingOffset = random(0, Math.PI * 2);
         
-        // Gambar punya kemiringan rotasi, teks lurus
         this.angle = this.type === 'img' ? random(-15, 15) : 0;
     }
 
     update() {
         if (!state.playing) return;
         
-        // Bergerak ke atas seperti emot hati
         this.y -= this.speed; 
-        // Gerakan mengayun (kiri - kanan)
         this.x += Math.sin(this.y * 0.01 + this.swingOffset) * this.swing;
 
-        // Jika sudah melewati batas atas layar, reset ke bawah lagi
+        // Reset ketika elemen sudah jauh melewati batas atas layar
         if (this.y < -250) {
             this.reset(false);
         }
@@ -166,40 +168,54 @@ function generateFloatingElements() {
     scrollTrack.innerHTML = "";
     floatElements = [];
 
-    // Pastikan wadah memenuhi layar
     scrollTrack.style.width = "100vw";
     scrollTrack.style.height = "100vh";
     scrollTrack.style.position = "absolute";
     scrollTrack.style.overflow = "hidden";
+
+    const isMobile = window.innerWidth < 768;
 
     // 1. BUAT GAMBAR YANG MELAYANG
     photos.forEach((src) => {
         const img = document.createElement("img");
         img.src = src;
         img.className = "scatter-img";
-        // Styling inline agar aman dari CSS
         img.style.position = "absolute";
         img.style.top = "0px";
         img.style.left = "0px";
         img.style.willChange = "transform";
         
+        // Ukuran gambar disesuaikan sedikit via JS agar lebih compact di HP
+        if (isMobile) {
+            img.style.width = "110px";
+            img.style.height = "110px";
+        }
+        
         scrollTrack.appendChild(img);
         floatElements.push(new Floater(img, 'img'));
     });
 
-    // 2. BUAT TEKS YANG MELAYANG (Muncul!)
-    const totalTexts = 25; 
+    // 2. BUAT TEKS YANG MELAYANG (JUMLAH DIPERBANYAK AGAR PADAT)
+    const totalTexts = 80; // Diperbanyak menjadi 80 teks sekaligus
     for (let i = 0; i < totalTexts; i++) {
         const span = document.createElement("span");
         span.className = "scatter-text";
         span.innerText = phrases[randomInt(0, phrases.length)];
         
-        // Styling inline untuk menjamin teks terlihat (Warna terang)
         span.style.position = "absolute";
         span.style.top = "0px";
         span.style.left = "0px";
-        span.style.color = Math.random() > 0.7 ? "rgba(255, 180, 200, 0.9)" : "rgba(255, 255, 255, 0.7)";
-        span.style.fontSize = Math.random() > 0.5 ? "1.2rem" : "1.6rem";
+        
+        // Variasi warna teks (pink soft & putih semi-transparan)
+        span.style.color = Math.random() > 0.6 ? "rgba(255, 170, 190, 0.85)" : "rgba(255, 255, 255, 0.65)";
+        
+        // Ukuran font responsif (Desktop vs HP)
+        if (isMobile) {
+            span.style.fontSize = Math.random() > 0.5 ? "0.9rem" : "1.2rem";
+        } else {
+            span.style.fontSize = Math.random() > 0.5 ? "1.2rem" : "1.6rem";
+        }
+        
         span.style.fontWeight = "300";
         span.style.letterSpacing = "1px";
         span.style.willChange = "transform";
@@ -209,6 +225,13 @@ function generateFloatingElements() {
         floatElements.push(new Floater(span, 'text'));
     }
 }
+
+// Regenerate saat layar di-resize agar posisinya menyesuaikan responsivitas
+window.addEventListener("resize", () => {
+    if (state.started) {
+        generateFloatingElements();
+    }
+});
 
 audio.addEventListener("loadedmetadata", () => {
     if (floatElements.length === 0) generateFloatingElements();
@@ -323,20 +346,15 @@ function updateStars() {
     stars.style.opacity = starOpacity;
 }
 
-// ALL ANIMATIONS (Hearts, Stars, Texts, and Images) RUN HERE!
 let last = 0;
 function cinematicLoop(now) {
     const delta = now - last;
-    if (delta > 16) { // Batas ~60 FPS
+    if (delta > 16) { 
         ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
         
-        // Update & Render Hati
         hearts.forEach(h => { h.update(); h.draw(); });
-        
-        // Update Bintang
         updateStars();
         
-        // Update & Render Gambar dan Teks secara berkesinambungan
         floatElements.forEach(f => {
             f.update();
             f.render();
