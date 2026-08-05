@@ -1,5 +1,5 @@
 /*=====================================================
-    LOVE STORY (STATIC COLLAGE EDITION)
+    LOVE STORY (SLOW SCROLL & ALTERNATING EDITION)
     script.js
 ======================================================*/
 
@@ -32,15 +32,17 @@ const ctx = heartCanvas.getContext("2d");
 ======================================================*/
 const CONFIG = {
     photoFolder: "img/",
-    totalPhoto: 30, // Pastikan jumlah foto sesuai dengan foldermu
-    preload: true
+    totalPhoto: 30, // Pastikan jumlah foto sesuai
+    preload: true,
+    spacing: 400 // Jarak antar foto agar muncul bergantian (dalam px)
 };
 
 const state = {
     started: false,
     playing: false,
     loaded: 0,
-    finished: false
+    finished: false,
+    trackHeight: 0
 };
 
 /*=====================================================
@@ -111,37 +113,41 @@ function randomInt(min, max) {
 }
 
 /*=====================================================
-    GENERATE STATIC SCATTERED LAYOUT
+    GENERATE SCROLLING LAYOUT
 ======================================================*/
 function generateScatteredElements() {
     scrollTrack.innerHTML = "";
     
-    // Set wadah agar seukuran persis dengan 1 layar (viewport)
-    scrollTrack.style.width = "100vw";
-    scrollTrack.style.height = "100vh";
+    // Hitung total tinggi track berdasarkan jumlah foto dan jaraknya
+    state.trackHeight = window.innerHeight + (photos.length * CONFIG.spacing);
+    scrollTrack.style.width = "100%";
+    scrollTrack.style.height = state.trackHeight + "px";
 
-    // 1. SEBARKAN SEMUA FOTO DALAM 1 LAYAR
-    photos.forEach((src) => {
+    // 1. SEBARKAN FOTO (Muncul Bergantian dari atas ke bawah)
+    photos.forEach((src, i) => {
         const img = document.createElement("img");
         img.src = src;
         img.className = "scatter-img";
         
-        // Posisi acak persentase agar merata di layar (0% s/d 75% agar tidak terpotong habis di kanan/bawah)
-        const xPos = random(2, 75); 
-        const yPos = random(5, 75);
+        // Posisi X diacak (kiri - tengah - kanan)
+        const xPos = random(10, 60); 
+        
+        // Posisi Y diatur bertingkat agar foto muncul satu per satu
+        const baseY = (window.innerHeight / 1.5) + (i * CONFIG.spacing);
+        const yPos = baseY + random(-50, 50);
 
-        // Tambahkan rotasi acak sedikit agar terlihat seperti kolase foto yang dilempar
-        const rotation = random(-15, 15);
+        // Sedikit kemiringan agar natural
+        const rotation = random(-12, 12);
 
         img.style.left = xPos + "%";
-        img.style.top = yPos + "%";
+        img.style.top = yPos + "px";
         img.style.transform = `rotate(${rotation}deg)`;
         
         scrollTrack.appendChild(img);
     });
 
-    // 2. SEBARKAN TEKS (Jumlah dibatasi 25 agar tidak terlalu menutupi 30 foto)
-    const totalTexts = 25; 
+    // 2. SEBARKAN TEKS (Mengikuti tinggi track agar selalu ada teks saat scroll)
+    const totalTexts = photos.length * 4; 
     for (let i = 0; i < totalTexts; i++) {
         const span = document.createElement("span");
         span.className = "scatter-text";
@@ -152,12 +158,12 @@ function generateScatteredElements() {
 
         span.innerText = phrases[randomInt(0, phrases.length)];
 
-        // Teks disebar ke seluruh area layar
-        const xPos = random(2, 80);
-        const yPos = random(5, 90);
+        const xPos = random(5, 75);
+        // Teks disebar merata di seluruh panjang track vertikal
+        const yPos = random(window.innerHeight / 2, state.trackHeight - 200);
 
         span.style.left = xPos + "%";
-        span.style.top = yPos + "%";
+        span.style.top = yPos + "px";
         
         scrollTrack.appendChild(span);
     }
@@ -168,13 +174,20 @@ audio.addEventListener("loadedmetadata", () => {
 });
 
 /*=====================================================
-    ENGINE (PROGRESS BAR ONLY, NO SCROLL)
+    ENGINE (SLOW SCROLL ANIMATION)
 ======================================================*/
 function storyLoop() {
     if (state.playing && audio.duration) {
-        // Hanya update progress bar, tidak ada pergerakan posisi gambar/teks
         const progress = audio.currentTime / audio.duration;
+        
+        // Progress bar jalan
         progressBar.style.width = (progress * 100) + "%";
+
+        // Animasi Scroll perlahan ke atas (menciptakan ilusi kamera turun)
+        const maxScroll = state.trackHeight - window.innerHeight + 150; 
+        const currentScroll = progress * maxScroll;
+        
+        scrollTrack.style.transform = `translateY(-${currentScroll}px)`;
     }
     requestAnimationFrame(storyLoop);
 }
@@ -228,10 +241,11 @@ replayBtn.addEventListener("click", () => {
     state.finished = false;
     state.playing = true;
     progressBar.style.width = "0%";
+    scrollTrack.style.transform = "translateY(0px)";
     ending.style.display = "none";
     story.style.display = "block";
     
-    generateScatteredElements(); // Acak ulang posisinya setiap replay
+    generateScatteredElements(); 
     audio.play();
 });
 
